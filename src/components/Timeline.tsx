@@ -187,12 +187,16 @@ export default function Timeline({ commits, milestones }: TimelineProps) {
         .text(icon);
     });
 
-    // X axis: month/year labels
+    // X axis: month/year labels (hardcoded English — avoids browser locale)
+    const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
     const tickCount = Math.min(Math.floor(innerWidth / 70), 10);
     const xAxis = d3
       .axisBottom(xScale)
       .ticks(tickCount)
-      .tickFormat(d3.timeFormat("%b %Y") as (d: d3.NumberValue | Date) => string);
+      .tickFormat((d) => {
+        const date = d instanceof Date ? d : new Date(d as number);
+        return `${MONTHS[date.getMonth()]} ${date.getFullYear()}`;
+      });
 
     g.append("g")
       .attr("transform", `translate(0,${innerHeight + 6})`)
@@ -211,7 +215,7 @@ export default function Timeline({ commits, milestones }: TimelineProps) {
 
   const firstDate = new Date(sortedCommits[0].date);
   const lastDate = new Date(sortedCommits[sortedCommits.length - 1].date);
-  const dateRange = `${firstDate.toLocaleDateString("tr-TR", { month: "short", year: "numeric" })} → ${lastDate.toLocaleDateString("tr-TR", { month: "short", year: "numeric" })}`;
+  const dateRange = `${firstDate.toLocaleDateString("en-US", { month: "short", year: "numeric" })} → ${lastDate.toLocaleDateString("en-US", { month: "short", year: "numeric" })}`;
 
   return (
     <section
