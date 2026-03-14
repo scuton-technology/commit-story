@@ -2,14 +2,14 @@
 
 # 🎬 Commit Story
 
-**Git geçmişinizi interaktif bir hikayeye dönüştürün.**
+**Turn any GitHub repository's commit history into an interactive visual story.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)](https://www.typescriptlang.org/)
 [![Next.js](https://img.shields.io/badge/Next.js-15-black.svg)](https://nextjs.org/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 
-[Demo](https://commitstory.dev) · [Docs](https://commitstory.dev/docs) · [Report Bug](https://github.com/scuton/commit-story/issues) · [Request Feature](https://github.com/scuton/commit-story/issues)
+[Live Demo](https://commitstory.dev) · [Report Bug](https://github.com/scuton-technology/commit-story/issues) · [Request Feature](https://github.com/scuton-technology/commit-story/issues)
 
 <!-- TODO: Add demo GIF here -->
 <!-- ![Commit Story Demo](./public/demo.gif) -->
@@ -18,129 +18,121 @@
 
 ---
 
-## ✨ Nedir?
+## What is it?
 
-Commit Story, herhangi bir GitHub reposunun commit geçmişini interaktif, görsel bir hikaye olarak sunar. Projenizin evrimini görselleştirin, katkıda bulunanların yolculuğunu anlayın ve başarı noktalarını kutlayın.
+Commit Story visualizes any GitHub repository's commit history as an interactive, beautiful story. Explore project evolution, understand contributor journeys, and celebrate milestones — all in one page.
 
-## 🚀 Özellikler
+## Features
 
-- **📖 İnteraktif Zaman Çizelgesi** — Commit'ler kronolojik bir hikaye olarak görselleştirilir
-- **👥 Katkıda Bulunanlar Haritası** — Kim ne zaman ne kadar katkı yaptı, görsel olarak
-- **📊 Proje İstatistikleri** — Satır değişimleri, dosya hareketleri, en aktif dönemler
-- **🎨 Embeddable Widget** — README'nize ekleyebileceğiniz SVG/iframe badge'i
-- **🔀 Branch Hikayesi** — Branch'ler arası ilişkileri görsel ağaç olarak gösterir
-- **🏆 Milestone Tespiti** — Büyük release'ler, refactor'lar ve dönüm noktaları otomatik tespit
-- **🌙 Dark/Light Mode** — Otomatik tema desteği
-- **🔗 Paylaşılabilir URL** — Her proje için unique, paylaşılabilir hikaye sayfası
+- **Interactive Timeline** — Commits visualized chronologically with D3.js heatmap coloring
+- **Contributor Leaderboard** — See who contributed what, with progress bars and medals
+- **Project Stats** — Total commits, contributors, project age, most active day
+- **Milestone Detection** — Auto-detects first commits, releases, refactors, and 100-commit marks
+- **Embeddable Badge** — Drop a live badge into any README
+- **Share Button** — One-click copy link + share on X (Twitter)
+- **OG Image** — Auto-generated preview card when shared on social media
+- **Shareable URL** — Every repo gets a unique, permanent story page
 
-## 📦 Kurulum
+## Quick Start
 
 ```bash
-# Klonla
-git clone https://github.com/scuton/commit-story.git
+git clone https://github.com/scuton-technology/commit-story.git
 cd commit-story
-
-# Bağımlılıkları yükle
 npm install
-
-# Environment değişkenlerini ayarla
 cp .env.example .env.local
-# GITHUB_TOKEN değerini ekle
-
-# Geliştirme sunucusunu başlat
+# Add your GITHUB_TOKEN to .env.local
 npm run dev
 ```
 
-## 🛠️ Kullanım
+Open [http://localhost:3000](http://localhost:3000), paste any GitHub repo URL, and view the story.
 
-### Web Arayüzü
-
-```
-http://localhost:3000
-```
-
-Herhangi bir GitHub repo URL'si girin ve hikayeyi görün.
-
-### API
+## API
 
 ```bash
-# Repo hikayesini getir
+# Get repo story as JSON
 GET /api/story/:owner/:repo
 
 # Embeddable SVG badge
 GET /api/badge/:owner/:repo
+
+# OG image (1200x630)
+GET /api/og/:owner/:repo
 ```
 
-### README Badge
+## README Badge
+
+Add a live CommitStory badge to your project:
 
 ```markdown
 [![Commit Story](https://commitstory.dev/api/badge/your-username/your-repo)](https://commitstory.dev/story/your-username/your-repo)
 ```
 
-## 🏗️ Teknoloji Stack
+## Tech Stack
 
-| Teknoloji | Kullanım |
-|-----------|----------|
-| **Next.js 15** | Full-stack framework |
+| Technology | Purpose |
+|------------|---------|
+| **Next.js 15** | Full-stack framework (App Router) |
 | **TypeScript** | Type safety |
-| **D3.js** | Veri görselleştirme |
-| **GitHub API (Octokit)** | Repo verisi |
-| **Tailwind CSS** | Styling |
+| **Tailwind CSS 4** | Styling |
+| **D3.js** | Timeline visualization |
+| **Framer Motion** | Animations |
+| **GitHub API (Octokit)** | Repo data |
 | **Vercel** | Deployment |
 
-## 📁 Proje Yapısı
+## Project Structure
 
 ```
 commit-story/
 ├── src/
-│   ├── app/              # Next.js App Router
-│   ├── components/       # React bileşenleri
-│   │   ├── Timeline.tsx  # Ana zaman çizelgesi
-│   │   ├── StoryCard.tsx # Commit hikaye kartı
-│   │   ├── Contributors.tsx
-│   │   └── Badge.tsx     # Embeddable badge
-│   ├── lib/
-│   │   ├── github.ts     # GitHub API istemcisi
-│   │   ├── analyzer.ts   # Commit analiz motoru
-│   │   └── story.ts      # Hikaye oluşturucu
-│   └── api/              # API route'ları
-├── public/
+│   ├── app/
+│   │   ├── api/
+│   │   │   ├── story/[owner]/[repo]/   # JSON story endpoint
+│   │   │   ├── og/[owner]/[repo]/      # OG image generation
+│   │   │   └── badge/[owner]/[repo]/   # SVG badge
+│   │   └── story/[owner]/[repo]/       # Story page
+│   ├── components/
+│   │   ├── Timeline.tsx       # D3 commit timeline
+│   │   ├── StoryCard.tsx      # Individual commit card
+│   │   ├── Contributors.tsx   # Contributor leaderboard
+│   │   ├── StatsGrid.tsx      # Stats cards
+│   │   └── RepoHeader.tsx     # Repo info header
+│   └── lib/
+│       └── github.ts          # GitHub API client + story builder
 ├── .env.example
 ├── Dockerfile
-├── docker-compose.yml
-└── package.json
+└── docker-compose.yml
 ```
 
-## 🐳 Docker ile Çalıştırma
+## Docker
 
 ```bash
 docker compose up -d
 ```
 
-## 🤝 Katkıda Bulunma
+## Contributing
 
-Katkılarınızı bekliyoruz! Lütfen [CONTRIBUTING.md](CONTRIBUTING.md) dosyasını okuyun.
+Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) first.
 
-1. Fork yapın
-2. Feature branch oluşturun (`git checkout -b feature/amazing-feature`)
-3. Commit yapın (`git commit -m 'feat: add amazing feature'`)
-4. Push yapın (`git push origin feature/amazing-feature`)
-5. Pull Request açın
+1. Fork the repo
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## 📄 Lisans
+## License
 
-MIT License — detaylar için [LICENSE](LICENSE) dosyasına bakın.
+MIT License — see [LICENSE](LICENSE) for details.
 
-## 🙏 Teşekkürler
+## Credits
 
-[Scuton Technology](https://scuton.com) tarafından ❤️ ile geliştirildi.
+Built with ❤️ by [Scuton Technology](https://scuton.com)
 
 ---
 
 <div align="center">
 
-**[⬆ Yukarı](#-commit-story)**
+**[⬆ Back to top](#-commit-story)**
 
-⭐ Bu projeyi beğendiyseniz star vermeyi unutmayın!
+⭐ If you find this useful, give it a star!
 
 </div>
