@@ -1,0 +1,38 @@
+name: Bug Report
+description: Bir hata bildirin
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: "Bug bildirimi icin tesekkurler!"
+  - type: textarea
+    id: description
+    attributes:
+      label: Hatanin Aciklamasi
+      description: Ne oldu?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Tekrarlama Adimlari
+      description: Hatayi nasil tekrarlayabiliriz?
+      value: |
+        1. '...' sayfasina git
+        2. '...' butonuna tikla
+        3. Hatayi gor
+  - type: textarea
+    id: expected
+    attributes:
+      label: Beklenen Davranis
+      description: Ne olmasi gerekiyordu?
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: Tarayici
+      options:
+        - Chrome
+        - Firefox
+        - Safari
+        - Edge

@@ -1,0 +1,22 @@
+name: Feature Request
+description: Yeni bir ozellik onerin
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Ozellik Aciklamasi
+      description: Ne eklemek istiyorsunuz?
+    validations:
+      required: true
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivasyon
+      description: Bu ozellik neden gerekli?
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatifler
+      description: Baska cozumler dusundunuz mu?

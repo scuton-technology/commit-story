@@ -1,0 +1,57 @@
+{
+  "name": "commit-story",
+  "version": "0.1.0",
+  "description": "Git gecmisinizi interaktif bir hikayeye donusturun",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage"
+  },
+  "dependencies": {
+    "@octokit/rest": "^21.0.0",
+    "@tailwindcss/postcss": "^4.2.1",
+    "@vercel/og": "^0.11.1",
+    "d3": "^7.9.0",
+    "date-fns": "^4.0.0",
+    "framer-motion": "^12.36.0",
+    "lucide-react": "^0.400.0",
+    "next": "^15.0.0",
+    "next-themes": "^0.4.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/d3": "^7.4.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "eslint": "^9.0.0",
+    "eslint-config-next": "^15.0.0",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "license": "MIT",
+  "author": "Scuton Technology <info@scuton.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/scuton/commit-story.git"
+  },
+  "keywords": [
+    "git",
+    "commit",
+    "history",
+    "visualization",
+    "story",
+    "github",
+    "timeline",
+    "open-source"
+  ]
+}
