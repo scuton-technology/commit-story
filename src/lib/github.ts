@@ -18,16 +18,18 @@ export interface CommitData {
   files: string[];
 }
 
+export interface RepoInfo {
+  name: string;
+  full_name: string;
+  description: string;
+  stars: number;
+  forks: number;
+  created_at: string;
+  language: string;
+}
+
 export interface RepoStory {
-  repo: {
-    name: string;
-    full_name: string;
-    description: string;
-    stars: number;
-    forks: number;
-    created_at: string;
-    language: string;
-  };
+  repo: RepoInfo;
   commits: CommitData[];
   contributors: ContributorData[];
   milestones: MilestoneData[];
@@ -51,14 +53,37 @@ export interface MilestoneData {
 }
 
 export interface RepoStats {
-  total_commits: number;
-  total_contributors: number;
+  total_commits: number;       // Real total (from pagination header)
+  commits_shown: number;       // How many are in the commits[] array
+  total_contributors: number;  // Real total (paginated)
   total_additions: number;
   total_deletions: number;
   most_active_day: string;
   most_active_author: string;
   avg_commits_per_week: number;
   project_age_days: number;
+}
+
+// Bot detection — GitHub marks official bots with [bot] suffix
+const BOT_PATTERNS = [
+  "[bot]",
+  "dependabot",
+  "renovate",
+  "github-actions",
+  "codecov",
+  "greenkeeper",
+  "snyk-bot",
+  "allcontributors",
+  "semantic-release",
+  "imgbot",
+  "netlify",
+  "vercel",
+  "stale",
+];
+
+function isBot(login: string): boolean {
+  const lower = login.toLowerCase();
+  return BOT_PATTERNS.some((p) => lower.includes(p));
 }
 
 export class GitHubClient {
@@ -70,7 +95,7 @@ export class GitHubClient {
     });
   }
 
-  async getRepoInfo(owner: string, repo: string) {
+  async getRepoInfo(owner: string, repo: string): Promise<RepoInfo> {
     const { data } = await this.octokit.repos.get({ owner, repo });
     return {
       name: data.name,
@@ -83,12 +108,36 @@ export class GitHubClient {
     };
   }
 
-  async getCommits(owner: string, repo: string, perPage = 100, page = 1): Promise<CommitData[]> {
+  /**
+   * Get real total commit count using pagination header trick.
+   * Requests 1 commit and reads the `Link` header's last page number.
+   */
+  async getTotalCommitCount(owner: string, repo: string): Promise<number> {
+    try {
+      const response = await this.octokit.repos.listCommits({
+        owner,
+        repo,
+        per_page: 1,
+      });
+      const link = (response.headers as Record<string, string>)["link"] ?? "";
+      const match = link.match(/[?&]page=(\d+)>; rel="last"/);
+      if (match?.[1]) return parseInt(match[1], 10);
+      // No pagination link = only 1 page of results
+      return response.data.length;
+    } catch {
+      return 0;
+    }
+  }
+
+  /**
+   * Get latest 100 commits for timeline/display.
+   */
+  async getCommits(owner: string, repo: string): Promise<CommitData[]> {
     const { data } = await this.octokit.repos.listCommits({
       owner,
       repo,
-      per_page: perPage,
-      page,
+      per_page: 100,
+      page: 1,
     });
 
     return data.map((commit) => ({
@@ -101,40 +150,61 @@ export class GitHubClient {
         login: commit.author?.login || "unknown",
       },
       date: commit.commit.author?.date || "",
-      stats: {
-        additions: 0,
-        deletions: 0,
-        total: 0,
-      },
+      stats: { additions: 0, deletions: 0, total: 0 },
       files: [],
     }));
   }
 
-  async getContributors(owner: string, repo: string): Promise<ContributorData[]> {
-    const { data } = await this.octokit.repos.listContributors({
-      owner,
-      repo,
-      per_page: 100,
-    });
+  /**
+   * Get all contributors with pagination (up to 500).
+   * Filters out bots.
+   */
+  async getAllContributors(owner: string, repo: string): Promise<ContributorData[]> {
+    const all: ContributorData[] = [];
+    const PER_PAGE = 100;
+    const MAX_PAGES = 5;
 
-    return data.map((contributor) => ({
-      login: contributor.login || "unknown",
-      avatar_url: contributor.avatar_url || "",
-      contributions: contributor.contributions,
-      first_commit: "",
-      last_commit: "",
-    }));
+    for (let page = 1; page <= MAX_PAGES; page++) {
+      const { data } = await this.octokit.repos.listContributors({
+        owner,
+        repo,
+        per_page: PER_PAGE,
+        page,
+      });
+
+      if (data.length === 0) break;
+
+      for (const c of data) {
+        const login = c.login ?? "unknown";
+        if (!isBot(login)) {
+          all.push({
+            login,
+            avatar_url: c.avatar_url ?? "",
+            contributions: c.contributions,
+            first_commit: "",
+            last_commit: "",
+          });
+        }
+      }
+
+      if (data.length < PER_PAGE) break;
+    }
+
+    return all;
   }
 
   async buildStory(owner: string, repo: string): Promise<RepoStory> {
-    const [repoInfo, commits, contributors] = await Promise.all([
+    // Run repo info + commits + contributors + total count in parallel
+    const [repoInfo, commits, contributors, totalCommits] = await Promise.all([
       this.getRepoInfo(owner, repo),
       this.getCommits(owner, repo),
-      this.getContributors(owner, repo),
+      this.getAllContributors(owner, repo),
+      this.getTotalCommitCount(owner, repo),
     ]);
 
-    const milestones = this.detectMilestones(commits, contributors, repoInfo);
-    const stats = this.calculateStats(commits, contributors, repoInfo);
+    const realTotal = Math.max(totalCommits, commits.length);
+    const milestones = this.detectMilestones(commits, contributors, repoInfo, realTotal);
+    const stats = this.calculateStats(commits, contributors, repoInfo, realTotal);
 
     return {
       repo: repoInfo,
@@ -148,42 +218,45 @@ export class GitHubClient {
   private detectMilestones(
     commits: CommitData[],
     contributors: ContributorData[],
-    repo: { created_at: string }
+    repo: RepoInfo,
+    totalCommits: number
   ): MilestoneData[] {
     const milestones: MilestoneData[] = [];
 
-    // İlk commit
+    // First commit in the displayed window
     if (commits.length > 0) {
       const firstCommit = commits[commits.length - 1];
       milestones.push({
         type: "first-commit",
         date: firstCommit.date,
-        title: "İlk Commit",
-        description: `${firstCommit.author.name} projeyi başlattı`,
+        title: "First Commit",
+        description: `${firstCommit.author.name} started the project`,
         sha: firstCommit.sha,
       });
     }
 
-    // 100 commit milestone
-    if (commits.length >= 100) {
-      milestones.push({
-        type: "100-commits",
-        date: commits[commits.length - 100].date,
-        title: "100. Commit!",
-        description: "Proje 100 commit'e ulaştı",
-      });
+    // 100-commits milestone
+    if (totalCommits >= 100) {
+      // Use the oldest commit in our window as proxy date
+      const proxy = commits[commits.length - 1];
+      if (proxy) {
+        milestones.push({
+          type: "100-commits",
+          date: proxy.date,
+          title: "100 Commits!",
+          description: "Project reached 100 commits",
+        });
+      }
     }
 
-    // Release commit'leri tespit et
+    // Release commits detection
     commits.forEach((commit) => {
-      if (
-        commit.message.match(/^(v?\d+\.\d+\.\d+|release|bump version)/i)
-      ) {
+      if (commit.message.match(/^(v?\d+\.\d+\.\d+|release|bump version)/i)) {
         milestones.push({
           type: "release",
           date: commit.date,
           title: commit.message.split("\n")[0].slice(0, 60),
-          description: "Yeni versiyon yayınlandı",
+          description: "New version released",
           sha: commit.sha,
         });
       }
@@ -197,36 +270,39 @@ export class GitHubClient {
   private calculateStats(
     commits: CommitData[],
     contributors: ContributorData[],
-    repo: { created_at: string }
+    repo: RepoInfo,
+    totalCommits: number
   ): RepoStats {
-    const projectAge = Math.floor(
-      (Date.now() - new Date(repo.created_at).getTime()) / (1000 * 60 * 60 * 24)
+    const projectAgeDays = Math.max(
+      1,
+      Math.floor((Date.now() - new Date(repo.created_at).getTime()) / (1000 * 60 * 60 * 24))
     );
 
-    // En aktif gün
+    // Most active day of week (from latest 100 commits sample)
     const dayCount: Record<string, number> = {};
     commits.forEach((c) => {
       const day = new Date(c.date).toLocaleDateString("en-US", { weekday: "long" });
       dayCount[day] = (dayCount[day] || 0) + 1;
     });
-    const mostActiveDay = Object.entries(dayCount).sort((a, b) => b[1] - a[1])[0]?.[0] || "Unknown";
+    const mostActiveDay =
+      Object.entries(dayCount).sort((a, b) => b[1] - a[1])[0]?.[0] || "Unknown";
 
-    // En aktif yazar
-    const authorCount: Record<string, number> = {};
-    commits.forEach((c) => {
-      authorCount[c.author.login] = (authorCount[c.author.login] || 0) + 1;
-    });
-    const mostActiveAuthor = Object.entries(authorCount).sort((a, b) => b[1] - a[1])[0]?.[0] || "Unknown";
+    // Most active human author from contributors list (already bot-filtered)
+    const mostActiveAuthor = contributors[0]?.login || "Unknown";
+
+    // Weekly average using real total
+    const avgPerWeek = parseFloat(((totalCommits / projectAgeDays) * 7).toFixed(1));
 
     return {
-      total_commits: commits.length,
+      total_commits: totalCommits,
+      commits_shown: commits.length,
       total_contributors: contributors.length,
       total_additions: commits.reduce((sum, c) => sum + c.stats.additions, 0),
       total_deletions: commits.reduce((sum, c) => sum + c.stats.deletions, 0),
       most_active_day: mostActiveDay,
       most_active_author: mostActiveAuthor,
-      avg_commits_per_week: projectAge > 0 ? Math.round((commits.length / projectAge) * 7) : commits.length,
-      project_age_days: projectAge,
+      avg_commits_per_week: avgPerWeek,
+      project_age_days: projectAgeDays,
     };
   }
 }

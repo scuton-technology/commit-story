@@ -56,7 +56,7 @@ export default function StatsGrid({ stats }: StatsGridProps) {
     {
       label: "Total Commits",
       value: formatNumber(animatedCommits),
-      sublabel: `~${stats.avg_commits_per_week} commits/week`,
+      sublabel: `~${stats.avg_commits_per_week < 1 ? "< 1" : stats.avg_commits_per_week} commits/week`,
       icon: <GitCommit className="w-4 h-4" />,
       accentColor: "#22d3ee",
     },
@@ -157,7 +157,7 @@ export default function StatsGrid({ stats }: StatsGridProps) {
             Weekly Average
           </div>
           <div className="font-mono font-medium text-sm" style={{ color: "#f1f5f9" }}>
-            {stats.avg_commits_per_week} commits/wk
+            {stats.avg_commits_per_week < 1 ? "< 1" : stats.avg_commits_per_week} commits/wk
           </div>
         </div>
       </div>

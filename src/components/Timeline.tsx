@@ -7,6 +7,7 @@ import type { CommitData, MilestoneData } from "@/lib/github";
 interface TimelineProps {
   commits: CommitData[];
   milestones: MilestoneData[];
+  repoCreatedAt?: string;
 }
 
 interface TooltipData {
@@ -41,7 +42,7 @@ function commitColor(density: number): string {
   return "#16a34a";
 }
 
-export default function Timeline({ commits, milestones }: TimelineProps) {
+export default function Timeline({ commits, milestones, repoCreatedAt }: TimelineProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [tooltip, setTooltip] = useState<TooltipData | null>(null);
@@ -89,9 +90,11 @@ export default function Timeline({ commits, milestones }: TimelineProps) {
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
     const dates = sortedCommits.map((c) => new Date(c.date));
+    const domainStart = repoCreatedAt ? new Date(repoCreatedAt) : dates[0];
+    const domainEnd = new Date();
     const xScale = d3
       .scaleTime()
-      .domain([dates[0], dates[dates.length - 1]])
+      .domain([domainStart, domainEnd])
       .range([0, innerWidth]);
 
     // Compute per-bucket density for coloring
@@ -213,9 +216,10 @@ export default function Timeline({ commits, milestones }: TimelineProps) {
 
   if (sortedCommits.length === 0) return null;
 
-  const firstDate = new Date(sortedCommits[0].date);
-  const lastDate = new Date(sortedCommits[sortedCommits.length - 1].date);
-  const dateRange = `${firstDate.toLocaleDateString("en-US", { month: "short", year: "numeric" })} → ${lastDate.toLocaleDateString("en-US", { month: "short", year: "numeric" })}`;
+  const rangeStart = repoCreatedAt
+    ? new Date(repoCreatedAt)
+    : new Date(sortedCommits[0].date);
+  const dateRange = `${rangeStart.toLocaleDateString("en-US", { month: "short", year: "numeric" })} → Today`;
 
   return (
     <section

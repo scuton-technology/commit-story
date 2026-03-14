@@ -212,8 +212,8 @@ export default function StoryPage() {
       <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
         <RepoHeader repo={story.repo} />
         <StatsGrid stats={story.stats} />
-        <Timeline commits={story.commits} milestones={story.milestones} />
-        <CommitList commits={story.commits} />
+        <Timeline commits={story.commits} milestones={story.milestones} repoCreatedAt={story.repo.created_at} />
+        <CommitList commits={story.commits} totalCommits={story.stats.total_commits} />
         <Contributors contributors={story.contributors} />
         <BadgeSection owner={owner} repo={repo} />
       </div>

@@ -7,6 +7,7 @@ import StoryCard from "./StoryCard";
 
 interface CommitListProps {
   commits: CommitData[];
+  totalCommits?: number;
 }
 
 const PAGE_SIZE = 20;
@@ -30,7 +31,7 @@ function getCommitType(message: string): string | null {
   return match?.[1] ?? null;
 }
 
-export default function CommitList({ commits }: CommitListProps) {
+export default function CommitList({ commits, totalCommits }: CommitListProps) {
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
 
@@ -63,6 +64,8 @@ export default function CommitList({ commits }: CommitListProps) {
 
   if (commits.length === 0) return null;
 
+  const isPartial = totalCommits !== undefined && totalCommits > commits.length;
+
   const visibleFilters = FILTER_TYPES.filter(
     (f) => f.id === "all" || availableTypes.has(f.id)
   );
@@ -84,6 +87,25 @@ export default function CommitList({ commits }: CommitListProps) {
           )}
         </span>
       </div>
+
+      {/* Partial data notice */}
+      {isPartial && (
+        <div
+          className="mb-4 px-4 py-2.5 rounded-xl text-xs flex items-center gap-2"
+          style={{
+            background: "rgba(34,211,238,0.06)",
+            border: "1px solid rgba(34,211,238,0.15)",
+            color: "#64748b",
+          }}
+        >
+          <span style={{ color: "#22d3ee" }}>ℹ</span>
+          Showing latest {commits.length.toLocaleString("en-US")} of{" "}
+          <span style={{ color: "#f1f5f9", fontWeight: 500 }}>
+            {totalCommits.toLocaleString("en-US")}
+          </span>{" "}
+          total commits
+        </div>
+      )}
 
       {/* Category filters — only shown if repo uses conventional commits */}
       {visibleFilters.length > 1 && (
