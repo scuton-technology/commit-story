@@ -1,5 +1,25 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { GitCommit, Users, Calendar, TrendingUp } from "lucide-react";
 import type { RepoStats } from "@/lib/github";
+
+function useCountUp(target: number, duration = 1200): number {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (target === 0) return;
+    const start = Date.now();
+    const tick = () => {
+      const elapsed = Date.now() - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setCount(Math.round(target * eased));
+      if (progress < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }, [target, duration]);
+  return count;
+}
 
 interface StatsGridProps {
   stats: RepoStats;
@@ -28,25 +48,29 @@ interface StatCardConfig {
 }
 
 export default function StatsGrid({ stats }: StatsGridProps) {
+  const animatedCommits = useCountUp(stats.total_commits);
+  const animatedContributors = useCountUp(stats.total_contributors);
+  const animatedDays = useCountUp(stats.project_age_days);
+
   const cards: StatCardConfig[] = [
     {
       label: "Total Commits",
-      value: formatNumber(stats.total_commits),
-      sublabel: `~${stats.avg_commits_per_week}/week`,
+      value: formatNumber(animatedCommits),
+      sublabel: `~${stats.avg_commits_per_week} commits/week`,
       icon: <GitCommit className="w-4 h-4" />,
       accentColor: "#22d3ee",
     },
     {
       label: "Contributors",
-      value: formatNumber(stats.total_contributors),
+      value: formatNumber(animatedContributors),
       sublabel: "developers",
       icon: <Users className="w-4 h-4" />,
       accentColor: "#a78bfa",
     },
     {
       label: "Project Age",
-      value: formatAge(stats.project_age_days),
-      sublabel: `${stats.project_age_days.toLocaleString("en-US")} days`,
+      value: formatAge(animatedDays),
+      sublabel: `${animatedDays.toLocaleString("en-US")} days`,
       icon: <Calendar className="w-4 h-4" />,
       accentColor: "#94a3b8",
     },

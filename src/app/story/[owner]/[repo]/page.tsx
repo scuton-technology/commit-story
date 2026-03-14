@@ -9,8 +9,9 @@ import Timeline from "@/components/Timeline";
 import CommitList from "@/components/CommitList";
 import Contributors from "@/components/Contributors";
 import StoryLoading from "./loading";
+import BadgeSection from "@/components/BadgeSection";
 import Link from "next/link";
-import { ArrowLeft, Link2, Check, Share2 } from "lucide-react";
+import { ArrowLeft, Link2, Check, Share2, Linkedin } from "lucide-react";
 
 export default function StoryPage() {
   const { owner, repo } = useParams<{ owner: string; repo: string }>();
@@ -34,6 +35,25 @@ export default function StoryPage() {
     const url = window.location.href;
     window.open(
       `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
+      "_blank",
+      "noopener,noreferrer"
+    );
+  }
+
+  function handleShareLinkedIn() {
+    const url = window.location.href;
+    window.open(
+      `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
+      "_blank",
+      "noopener,noreferrer"
+    );
+  }
+
+  function handleShareReddit() {
+    const title = `Commit history of ${owner}/${repo} — visual story`;
+    const url = window.location.href;
+    window.open(
+      `https://www.reddit.com/submit?title=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`,
       "_blank",
       "noopener,noreferrer"
     );
@@ -171,6 +191,20 @@ export default function StoryPage() {
               <Share2 className="w-3.5 h-3.5" />
               Share
             </button>
+            <button
+              type="button"
+              onClick={handleShareLinkedIn}
+              className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg transition-all"
+              style={{
+                background: "rgba(30,41,59,0.8)",
+                border: "1px solid rgba(148,163,184,0.15)",
+                color: "#94a3b8",
+              }}
+              aria-label="Share on LinkedIn"
+            >
+              <Linkedin className="w-3.5 h-3.5" />
+              LinkedIn
+            </button>
           </div>
         </div>
       </nav>
@@ -181,6 +215,7 @@ export default function StoryPage() {
         <Timeline commits={story.commits} milestones={story.milestones} />
         <CommitList commits={story.commits} />
         <Contributors contributors={story.contributors} />
+        <BadgeSection owner={owner} repo={repo} />
       </div>
     </div>
   );

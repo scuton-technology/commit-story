@@ -4,6 +4,7 @@ import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { GitBranch, ArrowRight, Star, GitFork, Zap } from "lucide-react";
 import { motion } from "framer-motion";
+import RecentSearches, { addRecentSearch } from "@/components/RecentSearches";
 
 const EXAMPLE_REPOS = [
   {
@@ -65,15 +66,22 @@ export default function HomePage() {
 
     const parsed = parseRepoInput(input);
     if (!parsed) {
-      setError("Geçerli bir GitHub repo URL'si veya owner/repo formatı girin.");
+      setError("Enter a valid GitHub repo URL or owner/repo format.");
       return;
     }
 
+    addRecentSearch(`${parsed.owner}/${parsed.repo}`);
     router.push(`/story/${parsed.owner}/${parsed.repo}`);
   }
 
   function handleExampleClick(owner: string, repo: string) {
+    addRecentSearch(`${owner}/${repo}`);
     router.push(`/story/${owner}/${repo}`);
+  }
+
+  function handleRecentSelect(repo: string) {
+    addRecentSearch(repo);
+    router.push(`/story/${repo}`);
   }
 
   return (
@@ -159,7 +167,7 @@ export default function HomePage() {
                     setInput(e.target.value);
                     setError("");
                   }}
-                  placeholder="github.com/owner/repo veya owner/repo"
+                  placeholder="github.com/owner/repo or owner/repo"
                   className="w-full rounded-xl px-4 py-3.5 text-sm transition-all outline-none font-mono"
                   style={{
                     background: "rgba(15,22,41,0.8)",
@@ -175,7 +183,7 @@ export default function HomePage() {
                     e.currentTarget.style.borderColor = "rgba(148,163,184,0.15)";
                     e.currentTarget.style.boxShadow = "none";
                   }}
-                  aria-label="GitHub repo URL veya owner/repo"
+                  aria-label="GitHub repo URL or owner/repo"
                   aria-describedby={error ? "input-error" : undefined}
                 />
               </div>
@@ -201,6 +209,7 @@ export default function HomePage() {
                 {error}
               </p>
             )}
+            <RecentSearches onSelect={handleRecentSelect} />
           </motion.form>
         </div>
 

@@ -10,6 +10,26 @@ interface StoryCardProps {
   commit: CommitData;
 }
 
+const COMMIT_TYPES: Record<string, { color: string; bg: string; label: string }> = {
+  feat:     { color: "#4ade80", bg: "rgba(74,222,128,0.1)",  label: "feat" },
+  fix:      { color: "#f87171", bg: "rgba(248,113,113,0.1)", label: "fix" },
+  refactor: { color: "#a78bfa", bg: "rgba(167,139,250,0.1)", label: "refactor" },
+  docs:     { color: "#60a5fa", bg: "rgba(96,165,250,0.1)",  label: "docs" },
+  chore:    { color: "#94a3b8", bg: "rgba(148,163,184,0.1)", label: "chore" },
+  test:     { color: "#fb923c", bg: "rgba(251,146,60,0.1)",  label: "test" },
+  ci:       { color: "#94a3b8", bg: "rgba(148,163,184,0.1)", label: "ci" },
+  style:    { color: "#f472b6", bg: "rgba(244,114,182,0.1)", label: "style" },
+  perf:     { color: "#fbbf24", bg: "rgba(251,191,36,0.1)",  label: "perf" },
+  build:    { color: "#94a3b8", bg: "rgba(148,163,184,0.1)", label: "build" },
+  revert:   { color: "#f87171", bg: "rgba(248,113,113,0.1)", label: "revert" },
+};
+
+function parseCommitType(message: string) {
+  const match = message.match(/^(\w+)(\(.+\))?!?:\s/);
+  if (match?.[1]) return COMMIT_TYPES[match[1]] ?? null;
+  return null;
+}
+
 const AVATAR_PLACEHOLDER_COLORS = [
   "#22d3ee",
   "#a78bfa",
@@ -32,6 +52,7 @@ export default function StoryCard({ commit }: StoryCardProps) {
   const [hovered, setHovered] = useState(false);
 
   const shortSha = commit.sha.slice(0, 7);
+  const commitType = parseCommitType(commit.message);
   const [firstLine, ...restLines] = commit.message.split("\n");
   const body = restLines.filter(Boolean).join("\n").trim();
 
@@ -109,12 +130,26 @@ export default function StoryCard({ commit }: StoryCardProps) {
           </div>
 
           {/* Commit message */}
-          <p
-            className="text-sm leading-snug font-medium break-words"
-            style={{ color: "#cbd5e1" }}
-          >
-            {firstLine}
-          </p>
+          <div className="flex flex-wrap items-start gap-2">
+            {commitType && (
+              <span
+                className="shrink-0 text-xs font-mono font-medium px-1.5 py-0.5 rounded"
+                style={{
+                  color: commitType.color,
+                  background: commitType.bg,
+                  border: `1px solid ${commitType.color}30`,
+                }}
+              >
+                {commitType.label}
+              </span>
+            )}
+            <p
+              className="text-sm leading-snug font-medium break-words flex-1 min-w-0"
+              style={{ color: "#cbd5e1" }}
+            >
+              {firstLine}
+            </p>
+          </div>
           {body && (
             <p
               className="text-xs mt-1 leading-relaxed whitespace-pre-wrap"
