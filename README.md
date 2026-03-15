@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://commitstory.dev/favicon.ico" width="60" />
+<img src="https://commitstory.dev/favicon.svg" width="60" />
 
 # Commit Story
 
