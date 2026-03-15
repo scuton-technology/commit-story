@@ -104,11 +104,15 @@ export default function Timeline({ commits, milestones, repoCreatedAt, owner, re
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
     const dates = sortedCommits.map((c) => new Date(c.date));
-    const domainStart = repoCreatedAt ? new Date(repoCreatedAt) : dates[0];
-    const domainEnd = new Date();
+    // Use actual commit date range so dots are spread across the timeline
+    const domainStart = dates[0];
+    const domainEnd = dates[dates.length - 1] ?? new Date();
+    // Add 5% padding on each side so edge dots aren't clipped
+    const span = domainEnd.getTime() - domainStart.getTime();
+    const pad = Math.max(span * 0.05, 86400000); // min 1 day padding
     const xScale = d3
       .scaleTime()
-      .domain([domainStart, domainEnd])
+      .domain([new Date(domainStart.getTime() - pad), new Date(domainEnd.getTime() + pad)])
       .range([0, innerWidth]);
 
     // Compute per-bucket density for coloring
@@ -239,10 +243,13 @@ export default function Timeline({ commits, milestones, repoCreatedAt, owner, re
 
   if (sortedCommits.length === 0) return null;
 
-  const rangeStart = repoCreatedAt
-    ? new Date(repoCreatedAt)
-    : new Date(sortedCommits[0].date);
-  const dateRange = `${rangeStart.toLocaleDateString("en-US", { month: "short", year: "numeric" })} → Today`;
+  const firstCommitDate = new Date(sortedCommits[0].date);
+  const lastCommitDate = new Date(sortedCommits[sortedCommits.length - 1].date);
+  const fmtOpts: Intl.DateTimeFormatOptions = { month: "short", day: "numeric", year: "numeric" };
+  const dateRange = `${firstCommitDate.toLocaleDateString("en-US", fmtOpts)} → ${lastCommitDate.toLocaleDateString("en-US", fmtOpts)}`;
+  const fullHistoryNote = repoCreatedAt
+    ? `Full project history: ${new Date(repoCreatedAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })} — Today`
+    : null;
 
   return (
     <section
@@ -257,10 +264,20 @@ export default function Timeline({ commits, milestones, repoCreatedAt, owner, re
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-base font-semibold" style={{ color: "#f1f5f9" }}>
           Timeline
+          <span className="text-xs font-normal ml-2" style={{ color: "#334155" }}>
+            latest {sortedCommits.length} commits
+          </span>
         </h2>
-        <span className="text-xs font-mono" style={{ color: "#475569" }}>
-          {dateRange}
-        </span>
+        <div className="text-right">
+          <span className="text-xs font-mono" style={{ color: "#475569" }}>
+            {dateRange}
+          </span>
+          {fullHistoryNote && (
+            <div className="text-xs mt-0.5" style={{ color: "#334155" }}>
+              {fullHistoryNote}
+            </div>
+          )}
+        </div>
       </div>
 
       <div ref={containerRef} className="relative">

@@ -25,15 +25,31 @@ function useCountUp(
 
   useEffect(() => {
     if (!triggered || target === 0) return;
-    const start = Date.now();
-    const tick = () => {
-      const elapsed = Date.now() - start;
+    let rafId: number;
+    let done = false;
+    const start = performance.now();
+    const tick = (now: number) => {
+      if (done) return;
+      const elapsed = now - start;
       const progress = Math.min(elapsed / duration, 1);
       const eased = 1 - Math.pow(1 - progress, 3);
       setCount(Math.round(target * eased));
-      if (progress < 1) requestAnimationFrame(tick);
+      if (progress < 1) {
+        rafId = requestAnimationFrame(tick);
+      } else {
+        setCount(target); // guarantee exact final value
+      }
     };
-    requestAnimationFrame(tick);
+    rafId = requestAnimationFrame(tick);
+    // Fallback: if rAF is throttled (inactive tab), force final value
+    const fallbackTimer = setTimeout(() => {
+      if (!done) setCount(target);
+    }, duration + 200);
+    return () => {
+      done = true;
+      cancelAnimationFrame(rafId);
+      clearTimeout(fallbackTimer);
+    };
   }, [triggered, target, duration]);
 
   return { count, ref };

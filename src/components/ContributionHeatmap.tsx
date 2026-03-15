@@ -39,20 +39,42 @@ export default function ContributionHeatmap({ commits, owner, repo }: Contributi
   const [apiStatus, setApiStatus] = useState<"loading" | "ok" | "fallback">("loading");
 
   useEffect(() => {
-    fetch(`/api/activity/${owner}/${repo}`)
-      .then((r) => {
-        if (!r.ok) throw new Error("not ok");
-        return r.json() as Promise<WeekActivity[]>;
-      })
-      .then((data) => {
+    let cancelled = false;
+    async function fetchActivity() {
+      try {
+        const r = await fetch(`/api/activity/${owner}/${repo}`);
+        if (cancelled) return;
+        if (r.status === 202) {
+          // GitHub still computing — wait 4s and retry once on client side
+          await new Promise((res) => setTimeout(res, 4000));
+          if (cancelled) return;
+          const r2 = await fetch(`/api/activity/${owner}/${repo}`);
+          if (cancelled) return;
+          if (!r2.ok) { setApiStatus("fallback"); return; }
+          const data = await r2.json() as WeekActivity[];
+          if (Array.isArray(data) && data.length > 0) {
+            setApiWeeks(data);
+            setApiStatus("ok");
+          } else {
+            setApiStatus("fallback");
+          }
+          return;
+        }
+        if (!r.ok) { setApiStatus("fallback"); return; }
+        const data = await r.json() as WeekActivity[];
+        if (cancelled) return;
         if (Array.isArray(data) && data.length > 0) {
           setApiWeeks(data);
           setApiStatus("ok");
         } else {
           setApiStatus("fallback");
         }
-      })
-      .catch(() => setApiStatus("fallback"));
+      } catch {
+        if (!cancelled) setApiStatus("fallback");
+      }
+    }
+    fetchActivity();
+    return () => { cancelled = true; };
   }, [owner, repo]);
 
   // Build grid from API data (52 weeks × 7 days)

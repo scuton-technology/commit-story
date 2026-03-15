@@ -18,17 +18,17 @@ export async function GET(_request: Request, { params }: RouteParams) {
     const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
     // GitHub Stats API: returns 52 weeks of commit activity
-    // May return 202 if stats are still computing — retry once
+    // May return 202 if stats are still computing — retry up to 3 times
     let data: WeekActivity[] | null = null;
-    for (let attempt = 0; attempt < 2; attempt++) {
+    for (let attempt = 0; attempt < 3; attempt++) {
       const res = await octokit.repos.getCommitActivityStats({ owner, repo });
       if (res.status === 200 && Array.isArray(res.data)) {
         data = res.data as WeekActivity[];
         break;
       }
       if (res.status === 202) {
-        // GitHub is computing stats — wait 2s then retry
-        await new Promise((r) => setTimeout(r, 2000));
+        // GitHub is computing stats — wait 3s then retry
+        await new Promise((r) => setTimeout(r, 3000));
       }
     }
 
