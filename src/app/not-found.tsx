@@ -14,47 +14,43 @@ export default function NotFound() {
   return (
     <main
       className="min-h-screen flex flex-col items-center justify-center px-6"
-      style={{ backgroundColor: "#0a0e1a" }}
+      style={{ backgroundColor: "var(--bg)" }}
     >
       <div className="max-w-lg w-full text-center space-y-6">
         {/* Logo */}
         <div className="flex items-center justify-center gap-2 mb-2">
-          <GitBranch className="w-5 h-5" style={{ color: "#22d3ee" }} />
-          <span className="font-mono font-bold" style={{ color: "#22d3ee" }}>
-            commit-story
+          <GitBranch className="w-5 h-5" style={{ color: "var(--accent)" }} />
+          <span className="font-bold" style={{ color: "var(--accent)" }}>
+            Commit Story
           </span>
         </div>
 
         {/* 404 */}
         <div
-          className="text-8xl font-bold font-mono tabular-nums"
-          style={{
-            background: "linear-gradient(to right, #22d3ee, #a78bfa)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-          }}
+          className="text-8xl font-bold tabular-nums"
+          style={{ color: "var(--text)" }}
         >
           404
         </div>
 
         <div>
-          <h1 className="text-xl font-semibold mb-2" style={{ color: "#f1f5f9" }}>
+          <h1 className="text-xl font-semibold mb-2" style={{ color: "var(--text)" }}>
             Page not found
           </h1>
-          <p className="text-sm" style={{ color: "#64748b" }}>
+          <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
             This repo story doesn&apos;t exist — or maybe you mistyped the URL.
           </p>
         </div>
 
         {/* Example repos */}
         <div
-          className="rounded-2xl p-5 text-left"
+          className="rounded-xl p-5 text-left"
           style={{
-            background: "rgba(15,22,41,0.8)",
-            border: "1px solid rgba(148,163,184,0.1)",
+            backgroundColor: "var(--card)",
+            border: "1px solid var(--border)",
           }}
         >
-          <p className="text-xs uppercase tracking-widest mb-3" style={{ color: "#334155" }}>
+          <p className="text-xs uppercase tracking-widest mb-3" style={{ color: "var(--text-tertiary)" }}>
             Try one of these
           </p>
           <div className="space-y-2">
@@ -63,18 +59,20 @@ export default function NotFound() {
                 key={`${ex.owner}/${ex.repo}`}
                 href={`/story/${ex.owner}/${ex.repo}`}
                 className="flex items-center justify-between group rounded-lg px-3 py-2 transition-all"
-                style={{ border: "1px solid rgba(148,163,184,0.08)" }}
+                style={{ border: "1px solid var(--border)" }}
                 onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLElement).style.borderColor = "rgba(34,211,238,0.3)";
+                  (e.currentTarget as HTMLElement).style.borderColor = "var(--accent)";
+                  (e.currentTarget as HTMLElement).style.backgroundColor = "var(--bg-secondary)";
                 }}
                 onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLElement).style.borderColor = "rgba(148,163,184,0.08)";
+                  (e.currentTarget as HTMLElement).style.borderColor = "var(--border)";
+                  (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
                 }}
               >
-                <span className="text-sm font-mono" style={{ color: "#cbd5e1" }}>
+                <span className="text-sm font-mono" style={{ color: "var(--text)" }}>
                   {ex.owner}/{ex.repo}
                 </span>
-                <span className="text-xs" style={{ color: "#22d3ee" }}>→</span>
+                <span className="text-xs" style={{ color: "var(--accent)" }}>→</span>
               </Link>
             ))}
           </div>
@@ -83,7 +81,7 @@ export default function NotFound() {
         <Link
           href="/"
           className="inline-flex items-center gap-2 text-sm transition-colors"
-          style={{ color: "#64748b" }}
+          style={{ color: "var(--text-secondary)" }}
         >
           <ArrowLeft className="w-4 h-4" />
           Back to home
