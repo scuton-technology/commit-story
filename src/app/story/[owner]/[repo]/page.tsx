@@ -239,7 +239,7 @@ export default function StoryPage() {
         <RepoHeader repo={story.repo} />
         <StatsGrid stats={story.stats} />
         <Timeline commits={story.commits} milestones={story.milestones} repoCreatedAt={story.repo.created_at} owner={owner} repo={repo} />
-        <ContributionHeatmap commits={story.commits} />
+        <ContributionHeatmap commits={story.commits} owner={owner} repo={repo} />
         <CommitList commits={story.commits} totalCommits={story.stats.total_commits} />
         <Contributors contributors={story.contributors} />
         <BadgeSection owner={owner} repo={repo} />

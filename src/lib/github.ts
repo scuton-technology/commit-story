@@ -124,7 +124,11 @@ export class GitHubClient {
       if (match?.[1]) return parseInt(match[1], 10);
       // No pagination link = only 1 page of results
       return response.data.length;
-    } catch {
+    } catch (err) {
+      // Rethrow rate-limit / auth errors so buildStory fails fast
+      const e = err as { status?: number };
+      if (e.status === 403 || e.status === 429 || e.status === 401) throw err;
+      // For other errors (empty repo, etc.) return 0
       return 0;
     }
   }

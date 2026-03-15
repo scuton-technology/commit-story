@@ -31,6 +31,18 @@ body {
   border: 1px solid var(--border);
 }
 
+/* Hero fade-in animations — CSS-only, no JS dependency */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.hero-fade { animation: fadeInUp 0.4s ease both; }
+.hero-fade-1 { animation-delay: 0s; }
+.hero-fade-2 { animation-delay: 0.1s; }
+.hero-fade-3 { animation-delay: 0.2s; }
+.hero-fade-4 { animation-delay: 0.3s; }
+.hero-fade-5 { animation-delay: 0.4s; }
+
 /* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--bg-primary); }

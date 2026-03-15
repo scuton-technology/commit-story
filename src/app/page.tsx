@@ -3,7 +3,6 @@
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { GitBranch, ArrowRight, Star, GitFork, Zap } from "lucide-react";
-import { motion } from "framer-motion";
 import RecentSearches, { addRecentSearch } from "@/components/RecentSearches";
 
 const EXAMPLE_REPOS = [
@@ -106,11 +105,8 @@ export default function HomePage() {
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-24">
         <div className="max-w-3xl w-full text-center space-y-8">
           {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm"
+          <div
+            className="hero-fade hero-fade-1 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm"
             style={{
               background: "rgba(34,211,238,0.08)",
               border: "1px solid rgba(34,211,238,0.2)",
@@ -119,14 +115,11 @@ export default function HomePage() {
           >
             <Zap className="w-3.5 h-3.5" />
             <span>Powered by GitHub API</span>
-          </motion.div>
+          </div>
 
           {/* Heading */}
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.1 }}
-            className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight"
+          <h1
+            className="hero-fade hero-fade-2 text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight"
             style={{ color: "#f1f5f9" }}
           >
             Turn your Git history
@@ -137,26 +130,20 @@ export default function HomePage() {
             >
               into a story
             </span>
-          </motion.h1>
+          </h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.2 }}
-            className="text-lg max-w-xl mx-auto leading-relaxed"
+          <p
+            className="hero-fade hero-fade-3 text-lg max-w-xl mx-auto leading-relaxed"
             style={{ color: "#94a3b8" }}
           >
             Visualize any GitHub repository's commit history as an interactive
             timeline, contributors map, and milestone journey.
-          </motion.p>
+          </p>
 
           {/* Form */}
-          <motion.form
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.3 }}
+          <form
             onSubmit={handleSubmit}
-            className="max-w-2xl mx-auto"
+            className="hero-fade hero-fade-4 max-w-2xl mx-auto"
           >
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="flex-1 relative">
@@ -210,16 +197,11 @@ export default function HomePage() {
               </p>
             )}
             <RecentSearches onSelect={handleRecentSelect} />
-          </motion.form>
+          </form>
         </div>
 
         {/* Example Repos */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.4 }}
-          className="max-w-6xl w-full mt-24"
-        >
+        <div className="hero-fade hero-fade-5 max-w-6xl w-full mt-24">
           <p
             className="text-sm text-center mb-6 uppercase tracking-widest"
             style={{ color: "#475569" }}
@@ -283,7 +265,7 @@ export default function HomePage() {
               </button>
             ))}
           </div>
-        </motion.div>
+        </div>
       </div>
 
       {/* Footer */}
