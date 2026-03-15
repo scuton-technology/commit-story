@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { Star, GitFork, Users, Calendar, Link2, Check } from "lucide-react";
+import { Star, Users, Link2, Check } from "lucide-react";
 import NavHeader from "@/components/NavHeader";
 
 interface WrappedData {
@@ -63,24 +63,23 @@ export default function WrappedPage() {
   const maxLang = data?.languages[0]?.count ?? 1;
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#0a0e1a" }}>
+    <div className="min-h-screen" style={{ backgroundColor: "var(--bg)" }}>
       <NavHeader />
 
       <div className="max-w-3xl mx-auto px-6 py-12">
         {loading && (
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="rounded-2xl animate-pulse" style={{ height: 120, background: "rgba(30,41,59,0.6)" }} />
+              <div key={i} className="rounded-2xl animate-pulse" style={{ height: 120, background: "var(--bg-tertiary)" }} />
             ))}
           </div>
         )}
 
         {error && (
           <div className="text-center py-20">
-            <div className="text-4xl mb-4">😕</div>
-            <h2 className="text-xl font-bold mb-2" style={{ color: "#f87171" }}>User not found</h2>
-            <p className="text-sm mb-6" style={{ color: "#64748b" }}>{error}</p>
-            <Link href="/wrapped" className="text-sm" style={{ color: "#22d3ee" }}>Try another username</Link>
+            <h2 className="text-xl font-bold mb-2" style={{ color: "var(--red)" }}>User not found</h2>
+            <p className="text-sm mb-6" style={{ color: "var(--text-secondary)" }}>{error}</p>
+            <Link href="/wrapped" className="text-sm" style={{ color: "var(--accent)" }}>Try another username</Link>
           </div>
         )}
 
@@ -89,7 +88,7 @@ export default function WrappedPage() {
             {/* Profile card */}
             <div
               className="rounded-2xl p-8 text-center"
-              style={{ background: "rgba(15,22,41,0.8)", border: "1px solid rgba(148,163,184,0.1)" }}
+              style={{ background: "var(--card)", border: "1px solid var(--border)" }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -98,28 +97,28 @@ export default function WrappedPage() {
                 width={96}
                 height={96}
                 className="rounded-full mx-auto mb-4"
-                style={{ border: "3px solid rgba(34,211,238,0.3)" }}
+                style={{ border: "3px solid var(--border)" }}
               />
-              <h1 className="text-2xl font-bold" style={{ color: "#f1f5f9" }}>{data.user.name}</h1>
-              <p className="font-mono text-sm mb-2" style={{ color: "#64748b" }}>@{data.user.login}</p>
-              {data.user.bio && <p className="text-sm max-w-md mx-auto" style={{ color: "#94a3b8" }}>{data.user.bio}</p>}
+              <h1 className="text-2xl font-bold" style={{ color: "var(--text)" }}>{data.user.name}</h1>
+              <p className="text-sm mb-2" style={{ color: "var(--text-secondary)" }}>@{data.user.login}</p>
+              {data.user.bio && <p className="text-sm max-w-md mx-auto" style={{ color: "var(--text-secondary)" }}>{data.user.bio}</p>}
 
               <div className="flex justify-center gap-6 mt-6">
                 <div className="text-center">
-                  <div className="text-xl font-bold font-mono" style={{ color: "#22d3ee" }}>{data.totalRepos}</div>
-                  <div className="text-xs" style={{ color: "#475569" }}>Repos</div>
+                  <div className="text-xl font-bold tabular-nums" style={{ color: "var(--accent)" }}>{data.totalRepos}</div>
+                  <div className="text-xs" style={{ color: "var(--text-tertiary)" }}>Repos</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-xl font-bold font-mono" style={{ color: "#fbbf24" }}>{data.totalStars.toLocaleString()}</div>
-                  <div className="text-xs" style={{ color: "#475569" }}>Stars</div>
+                  <div className="text-xl font-bold tabular-nums" style={{ color: "#eab308" }}>{data.totalStars.toLocaleString()}</div>
+                  <div className="text-xs" style={{ color: "var(--text-tertiary)" }}>Stars</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-xl font-bold font-mono" style={{ color: "#a78bfa" }}>{data.user.followers.toLocaleString()}</div>
-                  <div className="text-xs" style={{ color: "#475569" }}>Followers</div>
+                  <div className="text-xl font-bold tabular-nums" style={{ color: "var(--text)" }}>{data.user.followers.toLocaleString()}</div>
+                  <div className="text-xs" style={{ color: "var(--text-tertiary)" }}>Followers</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-xl font-bold font-mono" style={{ color: "#94a3b8" }}>{memberYears}y</div>
-                  <div className="text-xs" style={{ color: "#475569" }}>Member</div>
+                  <div className="text-xl font-bold tabular-nums" style={{ color: "var(--text-secondary)" }}>{memberYears}y</div>
+                  <div className="text-xs" style={{ color: "var(--text-tertiary)" }}>Member</div>
                 </div>
               </div>
             </div>
@@ -127,24 +126,24 @@ export default function WrappedPage() {
             {/* Languages */}
             <div
               className="rounded-2xl p-6"
-              style={{ background: "rgba(15,22,41,0.8)", border: "1px solid rgba(148,163,184,0.1)" }}
+              style={{ background: "var(--card)", border: "1px solid var(--border)" }}
             >
-              <h2 className="text-base font-semibold mb-4" style={{ color: "#f1f5f9" }}>Top Languages</h2>
+              <h2 className="text-base font-semibold mb-4" style={{ color: "var(--text)" }}>Top Languages</h2>
               <div className="space-y-2.5">
                 {data.languages.map((lang) => (
                   <div key={lang.name} className="flex items-center gap-3">
-                    <span className="text-xs font-mono w-24 text-right shrink-0" style={{ color: "#cbd5e1" }}>{lang.name}</span>
-                    <div className="flex-1 h-5 rounded-md overflow-hidden" style={{ background: "rgba(30,41,59,0.6)" }}>
+                    <span className="text-xs w-24 text-right shrink-0" style={{ color: "var(--text-secondary)" }}>{lang.name}</span>
+                    <div className="flex-1 h-5 rounded-md overflow-hidden" style={{ background: "var(--bg-tertiary)" }}>
                       <div
                         className="h-full rounded-md transition-all"
                         style={{
                           width: `${Math.max(8, (lang.count / maxLang) * 100)}%`,
-                          background: LANG_COLORS[lang.name] ?? "#64748b",
+                          background: LANG_COLORS[lang.name] ?? "var(--text-secondary)",
                           opacity: 0.8,
                         }}
                       />
                     </div>
-                    <span className="text-xs font-mono w-8" style={{ color: "#475569" }}>{lang.count}</span>
+                    <span className="text-xs w-8" style={{ color: "var(--text-tertiary)" }}>{lang.count}</span>
                   </div>
                 ))}
               </div>
@@ -153,26 +152,26 @@ export default function WrappedPage() {
             {/* Top repos */}
             <div
               className="rounded-2xl p-6"
-              style={{ background: "rgba(15,22,41,0.8)", border: "1px solid rgba(148,163,184,0.1)" }}
+              style={{ background: "var(--card)", border: "1px solid var(--border)" }}
             >
-              <h2 className="text-base font-semibold mb-4" style={{ color: "#f1f5f9" }}>Top Repositories</h2>
+              <h2 className="text-base font-semibold mb-4" style={{ color: "var(--text)" }}>Top Repositories</h2>
               <div className="space-y-3">
                 {data.topRepos.map((repo) => (
                   <Link
                     key={repo.full_name}
                     href={`/story/${repo.full_name}`}
                     className="block rounded-xl p-4 transition-all"
-                    style={{ background: "rgba(10,14,26,0.6)", border: "1px solid rgba(148,163,184,0.08)" }}
-                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = "rgba(34,211,238,0.3)"; }}
-                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(148,163,184,0.08)"; }}
+                    style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)" }}
+                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = "var(--accent)"; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = "var(--border)"; }}
                   >
                     <div className="flex items-center justify-between mb-1">
-                      <span className="font-mono text-sm font-medium" style={{ color: "#f1f5f9" }}>{repo.name}</span>
-                      <span className="flex items-center gap-1 text-xs" style={{ color: "#fbbf24" }}>
+                      <span className="text-sm font-medium" style={{ color: "var(--text)" }}>{repo.name}</span>
+                      <span className="flex items-center gap-1 text-xs" style={{ color: "#eab308" }}>
                         <Star className="w-3 h-3" /> {repo.stars.toLocaleString()}
                       </span>
                     </div>
-                    <p className="text-xs line-clamp-1" style={{ color: "#64748b" }}>{repo.description}</p>
+                    <p className="text-xs line-clamp-1" style={{ color: "var(--text-secondary)" }}>{repo.description}</p>
                   </Link>
                 ))}
               </div>
@@ -188,7 +187,7 @@ export default function WrappedPage() {
                   setTimeout(() => setCopied(false), 2000);
                 }}
                 className="inline-flex items-center gap-1.5 text-xs px-4 py-2 rounded-lg"
-                style={{ background: "rgba(30,41,59,0.8)", border: "1px solid rgba(148,163,184,0.15)", color: copied ? "#22d3ee" : "#94a3b8" }}
+                style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: copied ? "var(--accent)" : "var(--text-secondary)" }}
               >
                 {copied ? <Check className="w-3.5 h-3.5" /> : <Link2 className="w-3.5 h-3.5" />}
                 {copied ? "Copied!" : "Share"}

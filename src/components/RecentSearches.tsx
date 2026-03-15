@@ -53,16 +53,16 @@ export default function RecentSearches({ onSelect }: RecentSearchesProps) {
       <div className="flex items-center justify-between mb-2">
         <span
           className="text-xs uppercase tracking-wider font-medium"
-          style={{ color: "#475569" }}
+          style={{ color: "var(--text-tertiary)" }}
         >
           Recent
         </span>
         <button
           onClick={clear}
           className="text-xs transition-colors"
-          style={{ color: "#334155" }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = "#94a3b8")}
-          onMouseLeave={(e) => (e.currentTarget.style.color = "#334155")}
+          style={{ color: "var(--text-tertiary)" }}
+          onMouseEnter={(e) => (e.currentTarget.style.color = "var(--text-secondary)")}
+          onMouseLeave={(e) => (e.currentTarget.style.color = "var(--text-tertiary)")}
         >
           Clear all
         </button>
@@ -72,20 +72,20 @@ export default function RecentSearches({ onSelect }: RecentSearchesProps) {
           <div key={repo} className="flex items-center group">
             <button
               onClick={() => onSelect(repo)}
-              className="flex items-center gap-1.5 text-xs font-mono pl-3 pr-2 py-1.5 rounded-l-lg transition-all"
+              className="flex items-center gap-1.5 text-xs pl-3 pr-2 py-1.5 rounded-l-lg transition-all"
               style={{
-                background: "rgba(15,22,41,0.8)",
-                border: "1px solid rgba(148,163,184,0.1)",
+                background: "var(--bg-secondary)",
+                border: "1px solid var(--border)",
                 borderRight: "none",
-                color: "#94a3b8",
+                color: "var(--text-secondary)",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = "rgba(34,211,238,0.3)";
-                e.currentTarget.style.color = "#22d3ee";
+                e.currentTarget.style.borderColor = "var(--accent)";
+                e.currentTarget.style.color = "var(--accent)";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = "rgba(148,163,184,0.1)";
-                e.currentTarget.style.color = "#94a3b8";
+                e.currentTarget.style.borderColor = "var(--border)";
+                e.currentTarget.style.color = "var(--text-secondary)";
               }}
             >
               <Clock className="w-3 h-3 shrink-0" />
@@ -95,14 +95,14 @@ export default function RecentSearches({ onSelect }: RecentSearchesProps) {
               onClick={() => remove(repo)}
               className="flex items-center justify-center px-1.5 py-1.5 rounded-r-lg transition-all opacity-0 group-hover:opacity-100"
               style={{
-                background: "rgba(15,22,41,0.8)",
-                border: "1px solid rgba(148,163,184,0.1)",
-                borderLeft: "1px solid rgba(148,163,184,0.06)",
-                color: "#334155",
+                background: "var(--bg-secondary)",
+                border: "1px solid var(--border)",
+                borderLeft: "1px solid var(--border)",
+                color: "var(--text-tertiary)",
               }}
               aria-label={`Remove ${repo}`}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#f87171")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "#334155")}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "var(--red)")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "var(--text-tertiary)")}
             >
               <X className="w-3 h-3" />
             </button>

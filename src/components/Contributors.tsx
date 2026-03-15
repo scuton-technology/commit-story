@@ -5,15 +5,15 @@ interface ContributorsProps {
   contributors: ContributorData[];
 }
 
-const MEDALS = ["🥇", "🥈", "🥉"];
+const MEDALS = ["\u{1F947}", "\u{1F948}", "\u{1F949}"];
 
 const PLACEHOLDER_COLORS = [
-  "#22d3ee",
-  "#a78bfa",
-  "#34d399",
-  "#f97316",
-  "#fbbf24",
-  "#f472b6",
+  "#2563eb",
+  "#7c3aed",
+  "#059669",
+  "#ea580c",
+  "#eab308",
+  "#ec4899",
 ];
 
 function placeholderColor(login: string): string {
@@ -21,7 +21,7 @@ function placeholderColor(login: string): string {
   for (let i = 0; i < login.length; i++) {
     hash = login.charCodeAt(i) + ((hash << 5) - hash);
   }
-  return PLACEHOLDER_COLORS[Math.abs(hash) % PLACEHOLDER_COLORS.length] ?? "#22d3ee";
+  return PLACEHOLDER_COLORS[Math.abs(hash) % PLACEHOLDER_COLORS.length] ?? "#2563eb";
 }
 
 export default function Contributors({ contributors }: ContributorsProps) {
@@ -34,23 +34,21 @@ export default function Contributors({ contributors }: ContributorsProps) {
       className="rounded-2xl p-6"
       aria-labelledby="contributors-heading"
       style={{
-        background: "rgba(15,22,41,0.8)",
-        border: "1px solid rgba(148,163,184,0.1)",
-        backdropFilter: "blur(12px)",
+        background: "var(--card)",
+        border: "1px solid var(--border)",
       }}
     >
       <h2
         id="contributors-heading"
         className="text-base font-semibold mb-5"
-        style={{ color: "#f1f5f9" }}
+        style={{ color: "var(--text)" }}
       >
         Contributors
         <span
-          className="ml-2 text-sm font-normal font-mono px-2 py-0.5 rounded-full"
+          className="ml-2 text-sm font-normal px-2 py-0.5 rounded-full"
           style={{
-            color: "#a78bfa",
-            background: "rgba(167,139,250,0.1)",
-            border: "1px solid rgba(167,139,250,0.2)",
+            color: "var(--accent)",
+            background: "var(--accent-light)",
           }}
         >
           {contributors.length}
@@ -77,16 +75,16 @@ export default function Contributors({ contributors }: ContributorsProps) {
                 rel="noopener noreferrer"
                 className="block rounded-xl p-4 transition-all group"
                 style={{
-                  background: "rgba(10,14,26,0.6)",
-                  border: "1px solid rgba(148,163,184,0.08)",
+                  background: "var(--bg-secondary)",
+                  border: "1px solid var(--border)",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = "rgba(34,211,238,0.3)";
+                  e.currentTarget.style.borderColor = "var(--accent)";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = "rgba(148,163,184,0.08)";
+                  e.currentTarget.style.borderColor = "var(--border)";
                 }}
-                aria-label={`${contributor.login} — ${contributor.contributions} commits, view GitHub profile`}
+                aria-label={`${contributor.login} \u2014 ${contributor.contributions} commits, view GitHub profile`}
               >
                 {/* Medal badge */}
                 {medal && (
@@ -108,16 +106,15 @@ export default function Contributors({ contributors }: ContributorsProps) {
                       height={48}
                       unoptimized
                       className="rounded-full"
-                      style={{ background: "rgba(30,41,59,0.8)" }}
+                      style={{ background: "var(--bg-tertiary)" }}
                     />
                   ) : (
                     <div
-                      className="w-12 h-12 rounded-full flex items-center justify-center text-sm font-mono font-bold"
+                      className="w-12 h-12 rounded-full flex items-center justify-center text-sm font-bold"
                       aria-hidden="true"
                       style={{
-                        background: `${color}18`,
+                        background: `${color}15`,
                         color: color,
-                        border: `1px solid ${color}30`,
                       }}
                     >
                       {contributor.login.slice(0, 2).toUpperCase()}
@@ -127,16 +124,16 @@ export default function Contributors({ contributors }: ContributorsProps) {
 
                 {/* Username */}
                 <div
-                  className="font-medium text-sm truncate mb-0.5 transition-colors"
-                  style={{ color: "#cbd5e1" }}
+                  className="font-medium text-sm truncate mb-0.5"
+                  style={{ color: "var(--text)" }}
                 >
                   {contributor.login}
                 </div>
 
                 {/* Commit count */}
                 <div
-                  className="text-xs font-mono mb-3"
-                  style={{ color: "#475569" }}
+                  className="text-xs mb-3"
+                  style={{ color: "var(--text-secondary)" }}
                 >
                   {contributor.contributions.toLocaleString("en-US")} commits
                 </div>
@@ -144,7 +141,7 @@ export default function Contributors({ contributors }: ContributorsProps) {
                 {/* Contribution bar */}
                 <div
                   className="h-1 rounded-full overflow-hidden"
-                  style={{ background: "rgba(148,163,184,0.08)" }}
+                  style={{ background: "var(--border)" }}
                   role="progressbar"
                   aria-valuenow={contributor.contributions}
                   aria-valuemax={maxContributions}
@@ -154,7 +151,7 @@ export default function Contributors({ contributors }: ContributorsProps) {
                     className="h-full rounded-full transition-all"
                     style={{
                       width: `${barWidth}%`,
-                      background: `linear-gradient(to right, #22d3ee, #a78bfa)`,
+                      background: "var(--accent)",
                     }}
                   />
                 </div>

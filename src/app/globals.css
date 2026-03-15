@@ -1,50 +1,64 @@
 @import "tailwindcss";
 
 :root {
-  --bg-primary: #0a0e1a;
-  --bg-secondary: #0f1629;
-  --bg-card: rgba(15, 22, 41, 0.8);
-  --accent-cyan: #22d3ee;
-  --accent-violet: #a78bfa;
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --border: rgba(148, 163, 184, 0.1);
+  --bg: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-tertiary: #f1f3f5;
+  --text: #111827;
+  --text-secondary: #6b7280;
+  --text-tertiary: #9ca3af;
+  --accent: #2563eb;
+  --accent-light: #dbeafe;
+  --accent-hover: #1d4ed8;
+  --border: #e5e7eb;
+  --border-hover: #d1d5db;
+  --green: #059669;
+  --red: #dc2626;
+  --card: #ffffff;
+  --card-hover: #f9fafb;
+  --code-bg: #f3f4f6;
 }
 
-* {
-  box-sizing: border-box;
+.dark {
+  --bg: #0f0f0f;
+  --bg-secondary: #171717;
+  --bg-tertiary: #1a1a1a;
+  --text: #e5e5e5;
+  --text-secondary: #a3a3a3;
+  --text-tertiary: #737373;
+  --accent: #3b82f6;
+  --accent-light: rgba(59,130,246,0.15);
+  --accent-hover: #60a5fa;
+  --border: #2a2a2a;
+  --border-hover: #404040;
+  --card: #1a1a1a;
+  --card-hover: #222222;
+  --code-bg: #1e1e1e;
 }
+
+* { box-sizing: border-box; }
 
 body {
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  font-family: 'Inter', sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-.font-mono {
-  font-family: 'JetBrains Mono', monospace;
-}
-
-.glass {
-  background: var(--bg-card);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--border);
-}
-
-/* Hero fade-in animations — CSS-only, no JS dependency */
+/* Hero fade-in */
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-.hero-fade { animation: fadeInUp 0.4s ease both; }
+.hero-fade { animation: fadeInUp 0.5s ease both; }
 .hero-fade-1 { animation-delay: 0s; }
-.hero-fade-2 { animation-delay: 0.1s; }
-.hero-fade-3 { animation-delay: 0.2s; }
-.hero-fade-4 { animation-delay: 0.3s; }
-.hero-fade-5 { animation-delay: 0.4s; }
+.hero-fade-2 { animation-delay: 0.08s; }
+.hero-fade-3 { animation-delay: 0.16s; }
+.hero-fade-4 { animation-delay: 0.24s; }
+.hero-fade-5 { animation-delay: 0.32s; }
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--bg-primary); }
-::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.2); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.4); }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border-hover); }

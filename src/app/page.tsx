@@ -85,7 +85,7 @@ export default function HomePage() {
   }
 
   return (
-    <main className="min-h-screen flex flex-col" style={{ backgroundColor: "#0a0e1a" }}>
+    <main className="min-h-screen flex flex-col" style={{ backgroundColor: "var(--bg)" }}>
       <NavHeader />
 
       {/* Hero */}
@@ -95,9 +95,8 @@ export default function HomePage() {
           <div
             className="hero-fade hero-fade-1 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm"
             style={{
-              background: "rgba(34,211,238,0.08)",
-              border: "1px solid rgba(34,211,238,0.2)",
-              color: "#22d3ee",
+              background: "var(--accent-light)",
+              color: "var(--accent)",
             }}
           >
             <Zap className="w-3.5 h-3.5" />
@@ -107,23 +106,20 @@ export default function HomePage() {
           {/* Heading */}
           <h1
             className="hero-fade hero-fade-2 text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight"
-            style={{ color: "#f1f5f9" }}
+            style={{ color: "var(--text)" }}
           >
             Turn your Git history
             <br />
-            <span
-              className="bg-gradient-to-r from-cyan-400 to-violet-400 bg-clip-text"
-              style={{ WebkitTextFillColor: "transparent" }}
-            >
+            <span style={{ color: "var(--accent)" }}>
               into a story
             </span>
           </h1>
 
           <p
             className="hero-fade hero-fade-3 text-lg max-w-xl mx-auto leading-relaxed"
-            style={{ color: "#94a3b8" }}
+            style={{ color: "var(--text-secondary)" }}
           >
-            Visualize any GitHub repository's commit history as an interactive
+            Visualize any GitHub repository&#39;s commit history as an interactive
             timeline, contributors map, and milestone journey.
           </p>
 
@@ -142,19 +138,18 @@ export default function HomePage() {
                     setError("");
                   }}
                   placeholder="github.com/owner/repo or owner/repo"
-                  className="w-full rounded-xl px-4 py-3.5 text-sm transition-all outline-none font-mono"
+                  className="w-full rounded-xl px-4 py-3.5 text-sm transition-all outline-none"
                   style={{
-                    background: "rgba(15,22,41,0.8)",
-                    border: "1px solid rgba(148,163,184,0.15)",
-                    color: "#f1f5f9",
-                    backdropFilter: "blur(12px)",
+                    background: "var(--bg-secondary)",
+                    border: "1px solid var(--border)",
+                    color: "var(--text)",
                   }}
                   onFocus={(e) => {
-                    e.currentTarget.style.borderColor = "#22d3ee";
-                    e.currentTarget.style.boxShadow = "0 0 0 2px rgba(34,211,238,0.15)";
+                    e.currentTarget.style.borderColor = "var(--accent)";
+                    e.currentTarget.style.boxShadow = "0 0 0 3px var(--accent-light)";
                   }}
                   onBlur={(e) => {
-                    e.currentTarget.style.borderColor = "rgba(148,163,184,0.15)";
+                    e.currentTarget.style.borderColor = "var(--border)";
                     e.currentTarget.style.boxShadow = "none";
                   }}
                   aria-label="GitHub repo URL or owner/repo"
@@ -163,10 +158,10 @@ export default function HomePage() {
               </div>
               <button
                 type="submit"
-                className="flex items-center justify-center gap-2 font-bold px-6 py-3.5 rounded-xl transition-opacity shrink-0 hover:opacity-90"
+                className="flex items-center justify-center gap-2 font-semibold px-6 py-3.5 rounded-xl transition-opacity shrink-0 hover:opacity-90"
                 style={{
-                  background: "linear-gradient(to right, #22d3ee, #a78bfa)",
-                  color: "#0a0e1a",
+                  background: "var(--accent)",
+                  color: "#ffffff",
                 }}
               >
                 <span>View Story</span>
@@ -178,7 +173,7 @@ export default function HomePage() {
                 id="input-error"
                 role="alert"
                 className="mt-2 text-sm text-left"
-                style={{ color: "#f87171" }}
+                style={{ color: "var(--red)" }}
               >
                 {error}
               </p>
@@ -191,7 +186,7 @@ export default function HomePage() {
         <div className="hero-fade hero-fade-5 max-w-6xl w-full mt-24">
           <p
             className="text-sm text-center mb-6 uppercase tracking-widest"
-            style={{ color: "#475569" }}
+            style={{ color: "var(--text-tertiary)" }}
           >
             Try an example
           </p>
@@ -202,49 +197,50 @@ export default function HomePage() {
                 onClick={() => handleExampleClick(example.owner, example.repo)}
                 className="group text-left rounded-xl p-5 transition-all"
                 style={{
-                  background: "rgba(15,22,41,0.8)",
-                  border: "1px solid rgba(148,163,184,0.1)",
-                  backdropFilter: "blur(12px)",
+                  background: "var(--card)",
+                  border: "1px solid var(--border)",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = "rgba(34,211,238,0.4)";
+                  e.currentTarget.style.borderColor = "var(--accent)";
+                  e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.08)";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = "rgba(148,163,184,0.1)";
+                  e.currentTarget.style.borderColor = "var(--border)";
+                  e.currentTarget.style.boxShadow = "none";
                 }}
               >
                 <div className="flex items-center gap-2 mb-3">
                   <GitFork
-                    className="w-4 h-4 transition-colors"
-                    style={{ color: "#475569" }}
+                    className="w-4 h-4"
+                    style={{ color: "var(--text-tertiary)" }}
                   />
-                  <span className="font-mono text-xs" style={{ color: "#475569" }}>
+                  <span className="text-xs" style={{ color: "var(--text-tertiary)" }}>
                     {example.owner}
                   </span>
                 </div>
                 <div
-                  className="font-semibold mb-1 transition-colors"
-                  style={{ color: "#f1f5f9" }}
+                  className="font-semibold mb-1"
+                  style={{ color: "var(--text)" }}
                 >
                   {example.repo}
                 </div>
                 <p
                   className="text-xs mb-4 line-clamp-2"
-                  style={{ color: "#475569" }}
+                  style={{ color: "var(--text-secondary)" }}
                 >
                   {example.description}
                 </p>
                 <div className="flex items-center gap-3">
                   <span
                     className="flex items-center gap-1 text-xs"
-                    style={{ color: "#475569" }}
+                    style={{ color: "var(--text-secondary)" }}
                   >
                     <Star className="w-3 h-3" />
                     {example.stars}
                   </span>
                   <span
-                    className="text-xs font-mono"
-                    style={{ color: "#334155" }}
+                    className="text-xs"
+                    style={{ color: "var(--text-tertiary)" }}
                   >
                     {example.language}
                   </span>
@@ -258,11 +254,11 @@ export default function HomePage() {
       {/* Footer */}
       <footer
         className="border-t py-6 px-6"
-        style={{ borderColor: "rgba(148,163,184,0.1)" }}
+        style={{ borderColor: "var(--border)" }}
       >
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs" style={{ color: "#334155" }}>
-          <span>Built by <a href="https://scuton.com" target="_blank" rel="noopener noreferrer" style={{ color: "#475569" }}>Scuton Technology</a></span>
-          <span className="font-mono">commitstory.dev</span>
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs" style={{ color: "var(--text-tertiary)" }}>
+          <span>Built by <a href="https://scuton.com" target="_blank" rel="noopener noreferrer" style={{ color: "var(--text-secondary)" }}>Scuton Technology</a></span>
+          <span>commitstory.dev</span>
         </div>
       </footer>
     </main>

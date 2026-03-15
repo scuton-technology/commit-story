@@ -78,7 +78,6 @@ interface StatCardConfig {
   value: string;
   sublabel: string;
   icon: React.ReactNode;
-  accentColor: string;
   cardRef?: React.RefObject<HTMLDivElement | null>;
 }
 
@@ -93,7 +92,6 @@ export default function StatsGrid({ stats }: StatsGridProps) {
       value: formatNumber(animatedCommits),
       sublabel: `~${stats.avg_commits_per_week < 1 ? "< 1" : stats.avg_commits_per_week} commits/week`,
       icon: <GitCommit className="w-4 h-4" />,
-      accentColor: "#22d3ee",
       cardRef: commitsRef,
     },
     {
@@ -101,7 +99,6 @@ export default function StatsGrid({ stats }: StatsGridProps) {
       value: formatNumber(animatedContributors),
       sublabel: "developers",
       icon: <Users className="w-4 h-4" />,
-      accentColor: "#a78bfa",
       cardRef: contribRef,
     },
     {
@@ -109,7 +106,6 @@ export default function StatsGrid({ stats }: StatsGridProps) {
       value: formatAge(animatedDays),
       sublabel: `${animatedDays.toLocaleString("en-US")} days`,
       icon: <Calendar className="w-4 h-4" />,
-      accentColor: "#94a3b8",
       cardRef: daysRef,
     },
     {
@@ -117,7 +113,6 @@ export default function StatsGrid({ stats }: StatsGridProps) {
       value: stats.most_active_day,
       sublabel: "by commit count",
       icon: <TrendingUp className="w-4 h-4" />,
-      accentColor: "#fbbf24",
     },
   ];
 
@@ -131,30 +126,28 @@ export default function StatsGrid({ stats }: StatsGridProps) {
             ref={card.cardRef}
             className="rounded-2xl p-5"
             style={{
-              background: "rgba(15,22,41,0.8)",
-              border: "1px solid rgba(148,163,184,0.1)",
-              backdropFilter: "blur(12px)",
+              background: "var(--card)",
+              border: "1px solid var(--border)",
             }}
           >
             <div
               className="flex items-center gap-2 mb-3"
-              style={{ color: "#475569" }}
+              style={{ color: "var(--text-tertiary)" }}
             >
-              <span style={{ color: card.accentColor }}>{card.icon}</span>
+              <span style={{ color: "var(--accent)" }}>{card.icon}</span>
               <span
                 className="text-xs uppercase tracking-wider font-medium"
-                style={{ color: "#475569" }}
               >
                 {card.label}
               </span>
             </div>
             <div
-              className="text-3xl font-bold font-mono tabular-nums"
-              style={{ color: card.accentColor }}
+              className="text-3xl font-bold tabular-nums"
+              style={{ color: "var(--text)" }}
             >
               {card.value}
             </div>
-            <div className="text-xs mt-1" style={{ color: "#334155" }}>
+            <div className="text-xs mt-1" style={{ color: "var(--text-tertiary)" }}>
               {card.sublabel}
             </div>
           </div>
@@ -165,37 +158,36 @@ export default function StatsGrid({ stats }: StatsGridProps) {
       <div
         className="rounded-2xl px-6 py-4 flex flex-wrap gap-x-10 gap-y-3"
         style={{
-          background: "rgba(15,22,41,0.8)",
-          border: "1px solid rgba(148,163,184,0.1)",
-          backdropFilter: "blur(12px)",
+          background: "var(--card)",
+          border: "1px solid var(--border)",
         }}
       >
         <div>
           <div
             className="text-xs uppercase tracking-wider mb-1"
-            style={{ color: "#334155" }}
+            style={{ color: "var(--text-tertiary)" }}
           >
             Top Author
           </div>
-          <div className="font-mono font-medium text-sm" style={{ color: "#f1f5f9" }}>
+          <div className="font-medium text-sm" style={{ color: "var(--text)" }}>
             @{stats.most_active_author}
           </div>
         </div>
 
         <div
           className="w-px self-stretch"
-          style={{ background: "rgba(148,163,184,0.08)" }}
+          style={{ background: "var(--border)" }}
           aria-hidden="true"
         />
 
         <div>
           <div
             className="text-xs uppercase tracking-wider mb-1"
-            style={{ color: "#334155" }}
+            style={{ color: "var(--text-tertiary)" }}
           >
             Weekly Average
           </div>
-          <div className="font-mono font-medium text-sm" style={{ color: "#f1f5f9" }}>
+          <div className="font-medium text-sm" style={{ color: "var(--text)" }}>
             {stats.avg_commits_per_week < 1 ? "< 1" : stats.avg_commits_per_week} commits/wk
           </div>
         </div>

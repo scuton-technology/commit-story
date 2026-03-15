@@ -19,12 +19,12 @@ const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 function cellColor(count: number): string {
-  if (count === 0) return "rgba(30,41,59,0.6)";
-  if (count === 1) return "#166534";
-  if (count <= 3) return "#15803d";
-  if (count <= 6) return "#16a34a";
+  if (count === 0) return "var(--bg-tertiary)";
+  if (count === 1) return "#bbf7d0";
+  if (count <= 3) return "#86efac";
+  if (count <= 6) return "#4ade80";
   if (count <= 10) return "#22c55e";
-  return "#4ade80";
+  return "#16a34a";
 }
 
 interface Cell {
@@ -45,7 +45,6 @@ export default function ContributionHeatmap({ commits, owner, repo }: Contributi
         const r = await fetch(`/api/activity/${owner}/${repo}`);
         if (cancelled) return;
         if (r.status === 202) {
-          // GitHub still computing — wait 4s and retry once on client side
           await new Promise((res) => setTimeout(res, 4000));
           if (cancelled) return;
           const r2 = await fetch(`/api/activity/${owner}/${repo}`);
@@ -77,13 +76,11 @@ export default function ContributionHeatmap({ commits, owner, repo }: Contributi
     return () => { cancelled = true; };
   }, [owner, repo]);
 
-  // Build grid from API data (52 weeks × 7 days)
   const { grid, monthLabels, totalCommits } = useMemo(() => {
     let cells: Cell[][] = [];
     let total = 0;
 
     if (apiStatus === "ok" && apiWeeks) {
-      // Use GitHub Stats API data — real 52-week history
       const weeks = apiWeeks.slice(-52);
       cells = weeks.map((w) =>
         w.days.map((count, dayIdx) => {
@@ -94,7 +91,6 @@ export default function ContributionHeatmap({ commits, owner, repo }: Contributi
         })
       );
     } else if (apiStatus === "fallback") {
-      // Fallback: build from raw commits, same 52-week layout
       const countMap: Record<string, number> = {};
       commits.forEach((c) => {
         const d = new Date(c.date);
@@ -123,7 +119,6 @@ export default function ContributionHeatmap({ commits, owner, repo }: Contributi
       return { grid: [], monthLabels: [], totalCommits: 0 };
     }
 
-    // Build month labels
     const months: { label: string; col: number }[] = [];
     let lastMonth = -1;
     cells.forEach((col, wi) => {
@@ -149,18 +144,17 @@ export default function ContributionHeatmap({ commits, owner, repo }: Contributi
     <section
       className="rounded-2xl p-6"
       style={{
-        background: "rgba(15,22,41,0.8)",
-        border: "1px solid rgba(148,163,184,0.1)",
-        backdropFilter: "blur(12px)",
+        background: "var(--card)",
+        border: "1px solid var(--border)",
       }}
     >
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-base font-semibold" style={{ color: "#f1f5f9" }}>
+        <h2 className="text-base font-semibold" style={{ color: "var(--text)" }}>
           Commit Activity
         </h2>
-        <span className="text-xs font-mono" style={{ color: "#475569" }}>
-          {apiStatus === "loading" && "Loading…"}
-          {apiStatus === "ok" && `${totalCommits.toLocaleString("en-US")} commits · last 52 weeks`}
+        <span className="text-xs" style={{ color: "var(--text-secondary)" }}>
+          {apiStatus === "loading" && "Loading\u2026"}
+          {apiStatus === "ok" && `${totalCommits.toLocaleString("en-US")} commits \u00b7 last 52 weeks`}
           {apiStatus === "fallback" && `Based on latest ${commits.length} commits`}
         </span>
       </div>
@@ -168,7 +162,7 @@ export default function ContributionHeatmap({ commits, owner, repo }: Contributi
       {apiStatus === "loading" && (
         <div
           className="rounded-xl animate-pulse"
-          style={{ height: 120, background: "rgba(30,41,59,0.6)" }}
+          style={{ height: 120, background: "var(--bg-tertiary)" }}
         />
       )}
 
@@ -184,8 +178,7 @@ export default function ContributionHeatmap({ commits, owner, repo }: Contributi
                     position: "absolute",
                     left: m.col * (CELL + GAP),
                     fontSize: 10,
-                    color: "#475569",
-                    fontFamily: "monospace",
+                    color: "var(--text-tertiary)",
                     whiteSpace: "nowrap",
                   }}
                 >
@@ -211,8 +204,7 @@ export default function ContributionHeatmap({ commits, owner, repo }: Contributi
                     style={{
                       height: CELL,
                       fontSize: 9,
-                      color: i % 2 === 1 ? "#475569" : "transparent",
-                      fontFamily: "monospace",
+                      color: i % 2 === 1 ? "var(--text-tertiary)" : "transparent",
                       lineHeight: `${CELL}px`,
                     }}
                   >
@@ -256,19 +248,18 @@ export default function ContributionHeatmap({ commits, owner, repo }: Contributi
       {/* Tooltip */}
       {tooltip && (
         <div
-          className="pointer-events-none absolute z-50 rounded-lg px-2.5 py-1.5 text-xs shadow-xl"
+          className="pointer-events-none absolute z-50 rounded-lg px-2.5 py-1.5 text-xs shadow-lg"
           style={{
             left: tooltipPos.x,
             top: tooltipPos.y - 36,
-            background: "rgba(15,22,41,0.95)",
-            border: "1px solid rgba(148,163,184,0.15)",
-            backdropFilter: "blur(12px)",
-            color: "#f1f5f9",
+            background: "var(--card)",
+            border: "1px solid var(--border)",
+            color: "var(--text)",
             whiteSpace: "nowrap",
             transform: "translateX(-50%)",
           }}
         >
-          <span style={{ color: "#22d3ee", fontWeight: 600 }}>{tooltip.count}</span>
+          <span style={{ color: "var(--accent)", fontWeight: 600 }}>{tooltip.count}</span>
           {" "}commit{tooltip.count !== 1 ? "s" : ""} on{" "}
           {new Date(tooltip.date + "T12:00:00Z").toLocaleDateString("en-US", {
             month: "long",
@@ -282,11 +273,11 @@ export default function ContributionHeatmap({ commits, owner, repo }: Contributi
       {/* Legend */}
       {(apiStatus === "ok" || apiStatus === "fallback") && (
         <div className="flex items-center gap-1.5 mt-4 justify-end">
-          <span className="text-xs" style={{ color: "#334155" }}>Less</span>
+          <span className="text-xs" style={{ color: "var(--text-tertiary)" }}>Less</span>
           {[0, 1, 3, 6, 11].map((n) => (
             <div key={n} style={{ width: 12, height: 12, borderRadius: 2, background: cellColor(n) }} />
           ))}
-          <span className="text-xs" style={{ color: "#334155" }}>More</span>
+          <span className="text-xs" style={{ color: "var(--text-tertiary)" }}>More</span>
         </div>
       )}
     </section>

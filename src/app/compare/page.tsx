@@ -39,26 +39,25 @@ interface StatRowProps {
   v1: number;
   v2: number;
   format: (n: number) => string;
-  accentColor: string;
 }
 
-function StatRow({ label, v1, v2, format, accentColor }: StatRowProps) {
+function StatRow({ label, v1, v2, format }: StatRowProps) {
   const winner = v1 > v2 ? 1 : v2 > v1 ? 2 : 0;
   return (
     <div
       className="rounded-xl p-4 grid grid-cols-3 items-center text-center"
-      style={{ background: "rgba(10,14,26,0.6)", border: "1px solid rgba(148,163,184,0.08)" }}
+      style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)" }}
     >
       <div>
-        <span className="text-xl font-bold font-mono tabular-nums" style={{ color: winner === 1 ? accentColor : "#94a3b8" }}>
+        <span className="text-xl font-bold tabular-nums" style={{ color: winner === 1 ? "var(--accent)" : "var(--text-secondary)" }}>
           {format(v1)}
         </span>
-        {winner === 1 && <span className="ml-1 text-xs" style={{ color: "#4ade80" }}>▲</span>}
+        {winner === 1 && <span className="ml-1 text-xs" style={{ color: "var(--green)" }}>&blacktriangle;</span>}
       </div>
-      <span className="text-xs uppercase tracking-wider" style={{ color: "#475569" }}>{label}</span>
+      <span className="text-xs uppercase tracking-wider" style={{ color: "var(--text-tertiary)" }}>{label}</span>
       <div>
-        {winner === 2 && <span className="mr-1 text-xs" style={{ color: "#4ade80" }}>▲</span>}
-        <span className="text-xl font-bold font-mono tabular-nums" style={{ color: winner === 2 ? accentColor : "#94a3b8" }}>
+        {winner === 2 && <span className="mr-1 text-xs" style={{ color: "var(--green)" }}>&blacktriangle;</span>}
+        <span className="text-xl font-bold tabular-nums" style={{ color: winner === 2 ? "var(--accent)" : "var(--text-secondary)" }}>
           {format(v2)}
         </span>
       </div>
@@ -113,7 +112,6 @@ function CompareContent() {
     runCompare(input1, input2);
   }
 
-  // Auto-compare if URL has params
   useEffect(() => {
     const r1 = searchParams.get("repo1");
     const r2 = searchParams.get("repo2");
@@ -132,7 +130,6 @@ function CompareContent() {
     });
   }
 
-  // Determine winner
   let winner = 0;
   if (data1 && data2) {
     let score1 = 0, score2 = 0;
@@ -145,10 +142,10 @@ function CompareContent() {
   return (
     <div className="max-w-4xl mx-auto px-6 py-12">
       <div className="text-center mb-10">
-        <h1 className="text-3xl font-bold mb-2" style={{ color: "#f1f5f9" }}>
+        <h1 className="text-3xl font-bold mb-2" style={{ color: "var(--text)" }}>
           Compare Repos
         </h1>
-        <p className="text-sm" style={{ color: "#64748b" }}>
+        <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
           Put two repositories side by side and see which one leads
         </p>
       </div>
@@ -157,39 +154,39 @@ function CompareContent() {
       <form onSubmit={handleSubmit} className="mb-10">
         <div className="flex flex-col sm:flex-row gap-3 items-end">
           <div className="flex-1">
-            <label className="block text-xs mb-1.5 font-mono" style={{ color: "#475569" }}>First repo</label>
+            <label className="block text-xs mb-1.5" style={{ color: "var(--text-secondary)" }}>First repo</label>
             <input
               type="text"
               value={input1}
               onChange={(e) => setInput1(e.target.value)}
               placeholder="vercel/next.js"
-              className="w-full rounded-xl px-4 py-3 text-sm font-mono outline-none"
-              style={{ background: "rgba(15,22,41,0.8)", border: "1px solid rgba(148,163,184,0.15)", color: "#f1f5f9" }}
+              className="w-full rounded-xl px-4 py-3 text-sm outline-none"
+              style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text)" }}
             />
           </div>
-          <span className="text-lg font-bold self-center pb-1" style={{ color: "#334155" }}>vs</span>
+          <span className="text-lg font-bold self-center pb-1" style={{ color: "var(--text-tertiary)" }}>vs</span>
           <div className="flex-1">
-            <label className="block text-xs mb-1.5 font-mono" style={{ color: "#475569" }}>Second repo</label>
+            <label className="block text-xs mb-1.5" style={{ color: "var(--text-secondary)" }}>Second repo</label>
             <input
               type="text"
               value={input2}
               onChange={(e) => setInput2(e.target.value)}
               placeholder="facebook/react"
-              className="w-full rounded-xl px-4 py-3 text-sm font-mono outline-none"
-              style={{ background: "rgba(15,22,41,0.8)", border: "1px solid rgba(148,163,184,0.15)", color: "#f1f5f9" }}
+              className="w-full rounded-xl px-4 py-3 text-sm outline-none"
+              style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text)" }}
             />
           </div>
           <button
             type="submit"
             disabled={loading}
-            className="flex items-center gap-2 font-bold px-6 py-3 rounded-xl transition-opacity shrink-0 hover:opacity-90 disabled:opacity-50"
-            style={{ background: "linear-gradient(to right, #22d3ee, #a78bfa)", color: "#0a0e1a" }}
+            className="flex items-center gap-2 font-semibold px-6 py-3 rounded-xl transition-opacity shrink-0 hover:opacity-90 disabled:opacity-50"
+            style={{ background: "var(--accent)", color: "#ffffff" }}
           >
             {loading ? "Loading..." : "Compare"}
             {!loading && <ArrowRight className="w-4 h-4" />}
           </button>
         </div>
-        {error && <p className="mt-2 text-sm" style={{ color: "#f87171" }}>{error}</p>}
+        {error && <p className="mt-2 text-sm" style={{ color: "var(--red)" }}>{error}</p>}
       </form>
 
       {/* Results */}
@@ -198,22 +195,22 @@ function CompareContent() {
           {/* Repo names header */}
           <div className="grid grid-cols-3 items-center text-center">
             <div>
-              <div className="font-mono font-bold text-lg" style={{ color: winner === 1 ? "#22d3ee" : "#cbd5e1" }}>
+              <div className="font-semibold text-lg" style={{ color: winner === 1 ? "var(--accent)" : "var(--text)" }}>
                 {data1.repo.full_name}
               </div>
               {winner === 1 && (
-                <span className="inline-flex items-center gap-1 text-xs mt-1 px-2 py-0.5 rounded-full" style={{ background: "rgba(34,211,238,0.1)", color: "#22d3ee" }}>
+                <span className="inline-flex items-center gap-1 text-xs mt-1 px-2 py-0.5 rounded-full" style={{ background: "var(--accent-light)", color: "var(--accent)" }}>
                   <Trophy className="w-3 h-3" /> Winner
                 </span>
               )}
             </div>
-            <span className="text-sm font-bold" style={{ color: "#334155" }}>VS</span>
+            <span className="text-sm font-bold" style={{ color: "var(--text-tertiary)" }}>VS</span>
             <div>
-              <div className="font-mono font-bold text-lg" style={{ color: winner === 2 ? "#22d3ee" : "#cbd5e1" }}>
+              <div className="font-semibold text-lg" style={{ color: winner === 2 ? "var(--accent)" : "var(--text)" }}>
                 {data2.repo.full_name}
               </div>
               {winner === 2 && (
-                <span className="inline-flex items-center gap-1 text-xs mt-1 px-2 py-0.5 rounded-full" style={{ background: "rgba(34,211,238,0.1)", color: "#22d3ee" }}>
+                <span className="inline-flex items-center gap-1 text-xs mt-1 px-2 py-0.5 rounded-full" style={{ background: "var(--accent-light)", color: "var(--accent)" }}>
                   <Trophy className="w-3 h-3" /> Winner
                 </span>
               )}
@@ -223,12 +220,12 @@ function CompareContent() {
           {/* Stats comparison */}
           <div
             className="rounded-2xl p-6 space-y-3"
-            style={{ background: "rgba(15,22,41,0.8)", border: "1px solid rgba(148,163,184,0.1)" }}
+            style={{ background: "var(--card)", border: "1px solid var(--border)" }}
           >
-            <StatRow label="Commits" v1={data1.stats.total_commits} v2={data2.stats.total_commits} format={formatNum} accentColor="#22d3ee" />
-            <StatRow label="Contributors" v1={data1.stats.total_contributors} v2={data2.stats.total_contributors} format={formatNum} accentColor="#a78bfa" />
-            <StatRow label="Age" v1={data1.stats.project_age_days} v2={data2.stats.project_age_days} format={formatAge} accentColor="#94a3b8" />
-            <StatRow label="Weekly Avg" v1={data1.stats.avg_commits_per_week} v2={data2.stats.avg_commits_per_week} format={(n) => `${n}`} accentColor="#fbbf24" />
+            <StatRow label="Commits" v1={data1.stats.total_commits} v2={data2.stats.total_commits} format={formatNum} />
+            <StatRow label="Contributors" v1={data1.stats.total_contributors} v2={data2.stats.total_contributors} format={formatNum} />
+            <StatRow label="Age" v1={data1.stats.project_age_days} v2={data2.stats.project_age_days} format={formatAge} />
+            <StatRow label="Weekly Avg" v1={data1.stats.avg_commits_per_week} v2={data2.stats.avg_commits_per_week} format={(n) => `${n}`} />
           </div>
 
           {/* Share */}
@@ -237,7 +234,7 @@ function CompareContent() {
               type="button"
               onClick={handleCopyLink}
               className="inline-flex items-center gap-1.5 text-xs px-4 py-2 rounded-lg transition-all"
-              style={{ background: "rgba(30,41,59,0.8)", border: "1px solid rgba(148,163,184,0.15)", color: copied ? "#22d3ee" : "#94a3b8" }}
+              style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: copied ? "var(--accent)" : "var(--text-secondary)" }}
             >
               {copied ? <Check className="w-3.5 h-3.5" /> : <Link2 className="w-3.5 h-3.5" />}
               {copied ? "Copied!" : "Copy link"}
@@ -245,11 +242,11 @@ function CompareContent() {
             <button
               type="button"
               onClick={() => {
-                const text = `${data1.repo.full_name} vs ${data2.repo.full_name} — who has more commits?`;
+                const text = `${data1.repo.full_name} vs ${data2.repo.full_name} \u2014 who has more commits?`;
                 window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(window.location.href)}`, "_blank", "noopener,noreferrer");
               }}
               className="inline-flex items-center gap-1.5 text-xs px-4 py-2 rounded-lg transition-all"
-              style={{ background: "rgba(30,41,59,0.8)", border: "1px solid rgba(148,163,184,0.15)", color: "#94a3b8" }}
+              style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-secondary)" }}
             >
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
               Share on X
@@ -263,9 +260,9 @@ function CompareContent() {
 
 export default function ComparePage() {
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#0a0e1a" }}>
+    <div className="min-h-screen" style={{ backgroundColor: "var(--bg)" }}>
       <NavHeader />
-      <Suspense fallback={<div className="max-w-4xl mx-auto px-6 py-12 text-center" style={{ color: "#475569" }}>Loading...</div>}>
+      <Suspense fallback={<div className="max-w-4xl mx-auto px-6 py-12 text-center" style={{ color: "var(--text-secondary)" }}>Loading...</div>}>
         <CompareContent />
       </Suspense>
     </div>

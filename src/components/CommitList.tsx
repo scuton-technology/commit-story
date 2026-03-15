@@ -13,15 +13,15 @@ interface CommitListProps {
 const PAGE_SIZE = 20;
 
 const FILTER_TYPES = [
-  { id: "all",      label: "All",      color: "#94a3b8" },
-  { id: "feat",     label: "✨ feat",   color: "#4ade80" },
-  { id: "fix",      label: "🐛 fix",    color: "#f87171" },
-  { id: "refactor", label: "♻️ refactor", color: "#a78bfa" },
-  { id: "docs",     label: "📝 docs",   color: "#60a5fa" },
-  { id: "chore",    label: "🔧 chore",  color: "#64748b" },
-  { id: "test",     label: "🧪 test",   color: "#fb923c" },
-  { id: "ci",       label: "⚙️ ci",     color: "#94a3b8" },
-  { id: "perf",     label: "⚡ perf",   color: "#fbbf24" },
+  { id: "all",      label: "All",      color: "var(--text-secondary)" },
+  { id: "feat",     label: "feat",     color: "#059669" },
+  { id: "fix",      label: "fix",      color: "#dc2626" },
+  { id: "refactor", label: "refactor", color: "#7c3aed" },
+  { id: "docs",     label: "docs",     color: "#2563eb" },
+  { id: "chore",    label: "chore",    color: "#6b7280" },
+  { id: "test",     label: "test",     color: "#ea580c" },
+  { id: "ci",       label: "ci",       color: "#6b7280" },
+  { id: "perf",     label: "perf",     color: "#eab308" },
 ] as const;
 
 type FilterType = (typeof FILTER_TYPES)[number]["id"];
@@ -35,7 +35,6 @@ export default function CommitList({ commits, totalCommits }: CommitListProps) {
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
 
-  // Detect which types actually exist in this repo's commits
   const availableTypes = useMemo(() => {
     const types = new Set<string>();
     commits.forEach((c) => {
@@ -75,15 +74,15 @@ export default function CommitList({ commits, totalCommits }: CommitListProps) {
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
         <h2
           className="text-base font-semibold"
-          style={{ color: "#f1f5f9" }}
+          style={{ color: "var(--text)" }}
           id="commits-heading"
         >
           Commits
         </h2>
-        <span className="text-xs font-mono" style={{ color: "#475569" }}>
+        <span className="text-xs" style={{ color: "var(--text-secondary)" }}>
           {visible.length} / {filtered.length} shown
           {activeFilter !== "all" && (
-            <span style={{ color: "#334155" }}> (filtered)</span>
+            <span style={{ color: "var(--text-tertiary)" }}> (filtered)</span>
           )}
         </span>
       </div>
@@ -93,21 +92,21 @@ export default function CommitList({ commits, totalCommits }: CommitListProps) {
         <div
           className="mb-4 px-4 py-2.5 rounded-xl text-xs flex items-center gap-2"
           style={{
-            background: "rgba(34,211,238,0.06)",
-            border: "1px solid rgba(34,211,238,0.15)",
-            color: "#64748b",
+            background: "var(--accent-light)",
+            border: "1px solid var(--border)",
+            color: "var(--text-secondary)",
           }}
         >
-          <span style={{ color: "#22d3ee" }}>ℹ</span>
+          <span style={{ color: "var(--accent)" }}>i</span>
           Showing latest {commits.length.toLocaleString("en-US")} of{" "}
-          <span style={{ color: "#f1f5f9", fontWeight: 500 }}>
+          <span style={{ color: "var(--text)", fontWeight: 500 }}>
             {totalCommits.toLocaleString("en-US")}
           </span>{" "}
           total commits
         </div>
       )}
 
-      {/* Category filters — only shown if repo uses conventional commits */}
+      {/* Category filters */}
       {visibleFilters.length > 1 && (
         <div className="flex flex-wrap gap-2 mb-4">
           {visibleFilters.map((f) => {
@@ -116,15 +115,15 @@ export default function CommitList({ commits, totalCommits }: CommitListProps) {
               <button
                 key={f.id}
                 onClick={() => setFilter(f.id)}
-                className="text-xs font-mono px-2.5 py-1 rounded-lg transition-all"
+                className="text-xs px-2.5 py-1 rounded-lg transition-all"
                 style={{
                   background: isActive
-                    ? `${f.color}18`
-                    : "rgba(15,22,41,0.6)",
+                    ? `${f.color}15`
+                    : "var(--bg-secondary)",
                   border: isActive
-                    ? `1px solid ${f.color}50`
-                    : "1px solid rgba(148,163,184,0.1)",
-                  color: isActive ? f.color : "#475569",
+                    ? `1px solid ${f.color}40`
+                    : "1px solid var(--border)",
+                  color: isActive ? f.color : "var(--text-secondary)",
                 }}
               >
                 {f.label}
@@ -152,7 +151,7 @@ export default function CommitList({ commits, totalCommits }: CommitListProps) {
         {visible.length === 0 && (
           <div
             className="text-center py-12 text-sm"
-            style={{ color: "#475569" }}
+            style={{ color: "var(--text-secondary)" }}
           >
             No commits match this filter.
           </div>
@@ -166,18 +165,17 @@ export default function CommitList({ commits, totalCommits }: CommitListProps) {
             onClick={loadMore}
             className="px-6 py-2.5 rounded-xl text-sm font-medium transition-all"
             style={{
-              background: "rgba(15,22,41,0.8)",
-              border: "1px solid rgba(148,163,184,0.15)",
-              color: "#94a3b8",
-              backdropFilter: "blur(12px)",
+              background: "var(--bg-secondary)",
+              border: "1px solid var(--border)",
+              color: "var(--text-secondary)",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = "rgba(34,211,238,0.4)";
-              e.currentTarget.style.color = "#22d3ee";
+              e.currentTarget.style.borderColor = "var(--accent)";
+              e.currentTarget.style.color = "var(--accent)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = "rgba(148,163,184,0.15)";
-              e.currentTarget.style.color = "#94a3b8";
+              e.currentTarget.style.borderColor = "var(--border)";
+              e.currentTarget.style.color = "var(--text-secondary)";
             }}
           >
             Load more ({filtered.length - visibleCount} remaining)

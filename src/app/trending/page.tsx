@@ -45,15 +45,15 @@ export default function TrendingPage() {
   const filtered = tab === "all" ? REPOS : REPOS.filter((r) => r.category.includes(tab));
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#0a0e1a" }}>
+    <div className="min-h-screen" style={{ backgroundColor: "var(--bg)" }}>
       <NavHeader />
 
       <div className="max-w-6xl mx-auto px-6 py-12">
         <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold mb-2" style={{ color: "#f1f5f9" }}>
+          <h1 className="text-3xl font-bold mb-2" style={{ color: "var(--text)" }}>
             Trending Stories
           </h1>
-          <p className="text-sm" style={{ color: "#64748b" }}>
+          <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
             Explore the commit history of the most popular open-source projects
           </p>
         </div>
@@ -66,9 +66,9 @@ export default function TrendingPage() {
               onClick={() => setTab(t.id)}
               className="inline-flex items-center gap-1.5 text-xs font-medium px-4 py-2 rounded-lg transition-all"
               style={{
-                background: tab === t.id ? "rgba(34,211,238,0.1)" : "rgba(15,22,41,0.8)",
-                border: `1px solid ${tab === t.id ? "rgba(34,211,238,0.3)" : "rgba(148,163,184,0.1)"}`,
-                color: tab === t.id ? "#22d3ee" : "#64748b",
+                background: tab === t.id ? "var(--accent-light)" : "var(--bg-secondary)",
+                border: `1px solid ${tab === t.id ? "var(--accent)" : "var(--border)"}`,
+                color: tab === t.id ? "var(--accent)" : "var(--text-secondary)",
               }}
             >
               {t.icon}
@@ -85,32 +85,33 @@ export default function TrendingPage() {
               href={`/story/${r.owner}/${r.repo}`}
               className="group rounded-2xl p-6 transition-all"
               style={{
-                background: "rgba(15,22,41,0.8)",
-                border: "1px solid rgba(148,163,184,0.1)",
-                backdropFilter: "blur(12px)",
+                background: "var(--card)",
+                border: "1px solid var(--border)",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = "rgba(34,211,238,0.3)";
+                e.currentTarget.style.borderColor = "var(--accent)";
+                e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.06)";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = "rgba(148,163,184,0.1)";
+                e.currentTarget.style.borderColor = "var(--border)";
+                e.currentTarget.style.boxShadow = "none";
               }}
             >
-              <div className="font-mono text-xs mb-2" style={{ color: "#475569" }}>
+              <div className="text-xs mb-2" style={{ color: "var(--text-tertiary)" }}>
                 {r.owner}
               </div>
-              <div className="text-lg font-semibold mb-2" style={{ color: "#f1f5f9" }}>
+              <div className="text-lg font-semibold mb-2" style={{ color: "var(--text)" }}>
                 {r.repo}
               </div>
-              <p className="text-xs mb-4 line-clamp-2" style={{ color: "#64748b" }}>
+              <p className="text-xs mb-4 line-clamp-2" style={{ color: "var(--text-secondary)" }}>
                 {r.description}
               </p>
               <div className="flex items-center gap-4">
-                <span className="flex items-center gap-1 text-xs" style={{ color: "#94a3b8" }}>
-                  <Star className="w-3 h-3" style={{ color: "#fbbf24" }} />
+                <span className="flex items-center gap-1 text-xs" style={{ color: "var(--text-secondary)" }}>
+                  <Star className="w-3 h-3" style={{ color: "#eab308" }} />
                   {r.stars}
                 </span>
-                <span className="flex items-center gap-1.5 text-xs" style={{ color: "#94a3b8" }}>
+                <span className="flex items-center gap-1.5 text-xs" style={{ color: "var(--text-secondary)" }}>
                   <span
                     className="w-2.5 h-2.5 rounded-full inline-block"
                     style={{ background: r.langColor }}
@@ -119,10 +120,10 @@ export default function TrendingPage() {
                 </span>
               </div>
               <div
-                className="mt-4 text-xs font-medium transition-colors"
-                style={{ color: "#22d3ee" }}
+                className="mt-4 text-xs font-medium"
+                style={{ color: "var(--accent)" }}
               >
-                View Story →
+                View Story &rarr;
               </div>
             </Link>
           ))}

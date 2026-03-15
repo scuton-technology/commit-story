@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { GitBranch } from "lucide-react";
+import ThemeToggle from "./ThemeToggle";
 
 const NAV_LINKS = [
   { href: "/trending", label: "Trending" },
@@ -17,20 +18,18 @@ export default function NavHeader() {
     <nav
       className="sticky top-0 z-50 border-b"
       style={{
-        backgroundColor: "rgba(10,14,26,0.8)",
-        backdropFilter: "blur(12px)",
-        WebkitBackdropFilter: "blur(12px)",
-        borderColor: "rgba(148,163,184,0.1)",
+        backgroundColor: "var(--bg)",
+        borderColor: "var(--border)",
       }}
     >
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center gap-6">
         <Link href="/" className="flex items-center gap-2 shrink-0">
-          <GitBranch className="w-5 h-5" style={{ color: "#22d3ee" }} />
+          <GitBranch className="w-5 h-5" style={{ color: "var(--accent)" }} />
           <span
-            className="font-mono font-bold tracking-tight"
-            style={{ color: "#22d3ee" }}
+            className="font-semibold tracking-tight"
+            style={{ color: "var(--text)" }}
           >
-            commit-story
+            Commit Story
           </span>
         </Link>
 
@@ -41,16 +40,17 @@ export default function NavHeader() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-xs font-medium px-3 py-1.5 rounded-lg transition-colors"
+                className="text-sm font-medium px-3 py-1.5 rounded-lg transition-colors"
                 style={{
-                  color: isActive ? "#22d3ee" : "#64748b",
-                  background: isActive ? "rgba(34,211,238,0.08)" : "transparent",
+                  color: isActive ? "var(--accent)" : "var(--text-secondary)",
+                  background: isActive ? "var(--accent-light)" : "transparent",
                 }}
               >
                 {link.label}
               </Link>
             );
           })}
+          <ThemeToggle />
         </div>
       </div>
     </nav>

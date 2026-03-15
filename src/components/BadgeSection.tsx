@@ -30,7 +30,7 @@ function CopyButton({ text }: { text: string }) {
     <button
       onClick={handleCopy}
       className="shrink-0 p-1.5 rounded-lg transition-all"
-      style={{ background: "rgba(30,41,59,0.8)", color: copied ? "#22d3ee" : "#475569" }}
+      style={{ background: "var(--bg-secondary)", color: copied ? "var(--accent)" : "var(--text-tertiary)" }}
       aria-label="Copy"
     >
       {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
@@ -52,13 +52,12 @@ export default function BadgeSection({ owner, repo }: BadgeSectionProps) {
     <section
       className="rounded-2xl p-6"
       style={{
-        background: "rgba(15,22,41,0.8)",
-        border: "1px solid rgba(148,163,184,0.1)",
-        backdropFilter: "blur(12px)",
+        background: "var(--card)",
+        border: "1px solid var(--border)",
       }}
     >
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-base font-semibold" style={{ color: "#f1f5f9" }}>
+        <h2 className="text-base font-semibold" style={{ color: "var(--text)" }}>
           Add to your README
         </h2>
         {/* Tab switcher */}
@@ -69,9 +68,9 @@ export default function BadgeSection({ owner, repo }: BadgeSectionProps) {
               onClick={() => setActiveTab(tab)}
               className="text-xs px-3 py-1 rounded-lg capitalize transition-all"
               style={{
-                background: activeTab === tab ? "rgba(34,211,238,0.12)" : "transparent",
-                border: activeTab === tab ? "1px solid rgba(34,211,238,0.35)" : "1px solid transparent",
-                color: activeTab === tab ? "#22d3ee" : "#475569",
+                background: activeTab === tab ? "var(--accent-light)" : "transparent",
+                border: activeTab === tab ? "1px solid var(--accent)" : "1px solid transparent",
+                color: activeTab === tab ? "var(--accent)" : "var(--text-secondary)",
               }}
             >
               {tab}
@@ -90,9 +89,9 @@ export default function BadgeSection({ owner, repo }: BadgeSectionProps) {
                 onClick={() => setActiveStyle(s.id)}
                 className="text-xs px-3 py-1.5 rounded-lg transition-all"
                 style={{
-                  background: activeStyle === s.id ? "rgba(34,211,238,0.12)" : "rgba(15,22,41,0.6)",
-                  border: activeStyle === s.id ? "1px solid rgba(34,211,238,0.35)" : "1px solid rgba(148,163,184,0.1)",
-                  color: activeStyle === s.id ? "#22d3ee" : "#64748b",
+                  background: activeStyle === s.id ? "var(--accent-light)" : "var(--bg-secondary)",
+                  border: activeStyle === s.id ? "1px solid var(--accent)" : "1px solid var(--border)",
+                  color: activeStyle === s.id ? "var(--accent)" : "var(--text-secondary)",
                 }}
               >
                 {s.label}
@@ -103,9 +102,9 @@ export default function BadgeSection({ owner, repo }: BadgeSectionProps) {
           {/* Badge preview */}
           <div
             className="rounded-xl p-4 mb-4 flex items-center gap-3"
-            style={{ background: "rgba(10,14,26,0.6)", border: "1px solid rgba(148,163,184,0.08)" }}
+            style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)" }}
           >
-            <span className="text-xs" style={{ color: "#475569" }}>Preview:</span>
+            <span className="text-xs" style={{ color: "var(--text-secondary)" }}>Preview:</span>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={badgeUrl}
@@ -117,9 +116,9 @@ export default function BadgeSection({ owner, repo }: BadgeSectionProps) {
           {/* Markdown code */}
           <div
             className="rounded-xl p-3 flex items-start gap-3"
-            style={{ background: "rgba(10,14,26,0.6)", border: "1px solid rgba(148,163,184,0.08)" }}
+            style={{ background: "var(--code-bg)", border: "1px solid var(--border)" }}
           >
-            <code className="flex-1 text-xs font-mono break-all leading-relaxed" style={{ color: "#64748b" }}>
+            <code className="flex-1 text-xs break-all leading-relaxed" style={{ color: "var(--text-secondary)" }}>
               {markdown}
             </code>
             <CopyButton text={markdown} />
@@ -132,7 +131,7 @@ export default function BadgeSection({ owner, repo }: BadgeSectionProps) {
           {/* Embed preview */}
           <div
             className="rounded-xl p-4 mb-4 flex items-center justify-center"
-            style={{ background: "rgba(10,14,26,0.6)", border: "1px solid rgba(148,163,184,0.08)" }}
+            style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)" }}
           >
             <iframe
               src={embedUrl}
@@ -146,9 +145,9 @@ export default function BadgeSection({ owner, repo }: BadgeSectionProps) {
           {/* iframe code */}
           <div
             className="rounded-xl p-3 flex items-start gap-3"
-            style={{ background: "rgba(10,14,26,0.6)", border: "1px solid rgba(148,163,184,0.08)" }}
+            style={{ background: "var(--code-bg)", border: "1px solid var(--border)" }}
           >
-            <code className="flex-1 text-xs font-mono break-all leading-relaxed" style={{ color: "#64748b" }}>
+            <code className="flex-1 text-xs break-all leading-relaxed" style={{ color: "var(--text-secondary)" }}>
               {iframeCode}
             </code>
             <CopyButton text={iframeCode} />

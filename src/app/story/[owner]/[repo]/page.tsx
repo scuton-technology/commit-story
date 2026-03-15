@@ -42,7 +42,7 @@ export default function StoryPage() {
     const age = story?.stats.project_age_days
       ? `${Math.floor(story.stats.project_age_days / 365)}y`
       : "";
-    const text = `${owner}/${repo} has ${commits} from ${contribs}${age ? ` over ${age}` : ""} 🚀 See the full story →`;
+    const text = `${owner}/${repo} has ${commits} from ${contribs}${age ? ` over ${age}` : ""} — See the full story`;
     const url = window.location.href;
     window.open(
       `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
@@ -77,7 +77,7 @@ export default function StoryPage() {
 
     fetch(`/api/story/${owner}/${repo}`)
       .then((r) => {
-        if (!r.ok) throw new Error(`GitHub API hatası (${r.status})`);
+        if (!r.ok) throw new Error(`GitHub API error (${r.status})`);
         return r.json() as Promise<RepoStory>;
       })
       .then((data) => {
@@ -96,32 +96,31 @@ export default function StoryPage() {
     return (
       <div
         className="min-h-screen flex flex-col"
-        style={{ backgroundColor: "#0a0e1a" }}
+        style={{ backgroundColor: "var(--bg)" }}
       >
         <NavHeader />
         <div className="flex-1 flex items-center justify-center p-6">
           <div
             className="rounded-2xl p-8 max-w-md w-full text-center"
             style={{
-              border: "1px solid rgba(239,68,68,0.3)",
-              background: "rgba(239,68,68,0.05)",
-              backdropFilter: "blur(12px)",
+              border: "1px solid var(--border)",
+              background: "var(--card)",
             }}
           >
-            <div className="text-4xl mb-4" aria-hidden="true">⚠️</div>
-            <h2 className="text-xl font-bold mb-2" style={{ color: "#f87171" }}>
+            <div className="text-4xl mb-4" aria-hidden="true">&#9888;&#65039;</div>
+            <h2 className="text-xl font-bold mb-2" style={{ color: "var(--red)" }}>
               Failed to load repo
             </h2>
-            <p className="text-sm mb-6" style={{ color: "#64748b" }}>
+            <p className="text-sm mb-6" style={{ color: "var(--text-secondary)" }}>
               {error ?? "Unknown error"}
             </p>
             <Link
               href="/"
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm transition-colors"
               style={{
-                background: "rgba(30,41,59,0.8)",
-                color: "#cbd5e1",
-                border: "1px solid rgba(148,163,184,0.1)",
+                background: "var(--bg-secondary)",
+                color: "var(--text-secondary)",
+                border: "1px solid var(--border)",
               }}
             >
               <ArrowLeft className="w-4 h-4" />
@@ -134,16 +133,16 @@ export default function StoryPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#0a0e1a" }}>
+    <div className="min-h-screen" style={{ backgroundColor: "var(--bg)" }}>
       <NavHeader />
 
       {/* Share bar */}
       <div
         className="border-b"
-        style={{ borderColor: "rgba(148,163,184,0.06)", background: "rgba(10,14,26,0.5)" }}
+        style={{ borderColor: "var(--border)", background: "var(--bg-secondary)" }}
       >
         <div className="max-w-7xl mx-auto px-6 py-2.5 flex items-center gap-3">
-          <span className="font-mono text-sm" style={{ color: "#cbd5e1" }}>
+          <span className="text-sm" style={{ color: "var(--text-secondary)" }}>
             {owner}/{repo}
           </span>
           <div className="ml-auto flex items-center gap-2">
@@ -152,9 +151,9 @@ export default function StoryPage() {
               onClick={handleCopyLink}
               className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg transition-all"
               style={{
-                background: "rgba(30,41,59,0.8)",
-                border: "1px solid rgba(148,163,184,0.15)",
-                color: copied ? "#22d3ee" : "#94a3b8",
+                background: "var(--bg)",
+                border: "1px solid var(--border)",
+                color: copied ? "var(--accent)" : "var(--text-secondary)",
               }}
               aria-label="Copy link"
             >
@@ -166,9 +165,9 @@ export default function StoryPage() {
               onClick={handleShareX}
               className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg transition-all"
               style={{
-                background: "rgba(30,41,59,0.8)",
-                border: "1px solid rgba(148,163,184,0.15)",
-                color: "#94a3b8",
+                background: "var(--bg)",
+                border: "1px solid var(--border)",
+                color: "var(--text-secondary)",
               }}
               aria-label="Share on X"
             >
@@ -182,9 +181,9 @@ export default function StoryPage() {
               onClick={handleShareLinkedIn}
               className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg transition-all"
               style={{
-                background: "rgba(30,41,59,0.8)",
-                border: "1px solid rgba(148,163,184,0.15)",
-                color: "#94a3b8",
+                background: "var(--bg)",
+                border: "1px solid var(--border)",
+                color: "var(--text-secondary)",
               }}
               aria-label="Share on LinkedIn"
             >
@@ -196,9 +195,9 @@ export default function StoryPage() {
               onClick={handleShareReddit}
               className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg transition-all"
               style={{
-                background: "rgba(30,41,59,0.8)",
-                border: "1px solid rgba(148,163,184,0.15)",
-                color: "#94a3b8",
+                background: "var(--bg)",
+                border: "1px solid var(--border)",
+                color: "var(--text-secondary)",
               }}
               aria-label="Share on Reddit"
             >
@@ -226,12 +225,12 @@ export default function StoryPage() {
             href={`/story/${owner}/${repo}/${new Date().getFullYear()}`}
             className="inline-flex items-center gap-2 text-sm font-medium px-5 py-2.5 rounded-xl transition-all"
             style={{
-              background: "rgba(15,22,41,0.8)",
-              border: "1px solid rgba(148,163,184,0.15)",
-              color: "#22d3ee",
+              background: "var(--bg-secondary)",
+              border: "1px solid var(--border)",
+              color: "var(--accent)",
             }}
           >
-            View {new Date().getFullYear()} in Review →
+            View {new Date().getFullYear()} in Review &rarr;
           </Link>
         </div>
       </div>
