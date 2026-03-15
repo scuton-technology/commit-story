@@ -18,12 +18,7 @@ Paste a repo URL. Get an interactive timeline, contributor map, and milestone jo
 
 <br />
 
-<a href="https://commitstory.dev/story/vercel/next.js">
-  <img src="https://commitstory.dev/api/og/vercel/next.js" width="720" alt="Commit Story — vercel/next.js" />
-</a>
-
-<br />
-<sub>↑ Auto-generated story card for vercel/next.js</sub>
+**[Try it → commitstory.dev](https://commitstory.dev)**
 
 </div>
 
