@@ -90,9 +90,12 @@ export async function GET(request: Request, { params }: RouteParams) {
 
   try {
     const client = new GitHubClient(process.env.GITHUB_TOKEN);
-    const story = await client.buildStory(owner, repo);
-    commitCount = story.stats.total_commits;
-    contributorCount = story.stats.total_contributors;
+    const [total, contributors] = await Promise.all([
+      client.getTotalCommitCount(owner, repo),
+      client.getAllContributors(owner, repo),
+    ]);
+    commitCount = total;
+    contributorCount = contributors.length;
   } catch {
     // Return badge with fallback
   }
