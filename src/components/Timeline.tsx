@@ -8,6 +8,8 @@ interface TimelineProps {
   commits: CommitData[];
   milestones: MilestoneData[];
   repoCreatedAt?: string;
+  owner?: string;
+  repo?: string;
 }
 
 interface TooltipData {
@@ -42,7 +44,19 @@ function commitColor(density: number): string {
   return "#16a34a";
 }
 
-export default function Timeline({ commits, milestones, repoCreatedAt }: TimelineProps) {
+const COMMIT_TYPE_COLORS: Record<string, string> = {
+  feat: "#4ade80", fix: "#f87171", refactor: "#a78bfa",
+  docs: "#60a5fa", chore: "#94a3b8", test: "#fb923c",
+  ci: "#94a3b8", style: "#f472b6", perf: "#fbbf24",
+};
+
+function getCommitTypeColor(message: string): string | null {
+  const match = message.match(/^(\w+)(\(.+\))?!?:\s/);
+  const type = match?.[1];
+  return type ? (COMMIT_TYPE_COLORS[type] ?? null) : null;
+}
+
+export default function Timeline({ commits, milestones, repoCreatedAt, owner, repo }: TimelineProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [tooltip, setTooltip] = useState<TooltipData | null>(null);
@@ -135,7 +149,6 @@ export default function Timeline({ commits, milestones, repoCreatedAt }: Timelin
       })
       .attr("fill-opacity", 0.75)
       .attr("stroke", "none")
-      .style("cursor", "pointer")
       .on("mouseover", function (event: MouseEvent, d: CommitData) {
         d3.select(this).attr("r", 8).attr("fill-opacity", 1);
         const rect = svgRef.current?.getBoundingClientRect();
@@ -164,7 +177,17 @@ export default function Timeline({ commits, milestones, repoCreatedAt }: Timelin
       .on("mouseout", function () {
         d3.select(this).attr("r", 5).attr("fill-opacity", 0.75);
         setTooltip(null);
-      });
+      })
+      .on("click", function (_event: MouseEvent, d: CommitData) {
+        if (owner && repo) {
+          window.open(
+            `https://github.com/${owner}/${repo}/commit/${d.sha}`,
+            "_blank",
+            "noopener,noreferrer"
+          );
+        }
+      })
+      .style("cursor", owner && repo ? "pointer" : "default");
 
     // Milestone markers
     milestones.forEach((milestone) => {
@@ -255,14 +278,26 @@ export default function Timeline({ commits, milestones, repoCreatedAt }: Timelin
               backdropFilter: "blur(12px)",
             }}
           >
-            <div
-              className="font-mono mb-1"
-              style={{ color: "#22d3ee" }}
-            >
-              {tooltip.commit.sha.slice(0, 7)}
+            {/* SHA + type badge */}
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="font-mono" style={{ color: "#22d3ee" }}>
+                {tooltip.commit.sha.slice(0, 7)}
+              </span>
+              {(() => {
+                const color = getCommitTypeColor(tooltip.commit.message);
+                const match = tooltip.commit.message.match(/^(\w+)(\(.+\))?!?:\s/);
+                return color && match?.[1] ? (
+                  <span
+                    className="text-xs font-mono px-1.5 py-0.5 rounded"
+                    style={{ color, background: `${color}18`, border: `1px solid ${color}30` }}
+                  >
+                    {match[1]}
+                  </span>
+                ) : null;
+              })()}
             </div>
             <div
-              className="font-medium leading-tight mb-1"
+              className="font-medium leading-tight mb-1.5"
               style={{
                 color: "#f1f5f9",
                 display: "-webkit-box",
@@ -273,10 +308,26 @@ export default function Timeline({ commits, milestones, repoCreatedAt }: Timelin
             >
               {tooltip.commit.message.split("\n")[0].slice(0, 60)}
             </div>
-            <div style={{ color: "#475569" }}>
-              {tooltip.commit.author.name} •{" "}
-              {new Date(tooltip.commit.date).toLocaleDateString("en-US")}
+            <div className="flex items-center gap-1.5" style={{ color: "#475569" }}>
+              {tooltip.commit.author.avatar_url && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={tooltip.commit.author.avatar_url}
+                  alt=""
+                  width={16}
+                  height={16}
+                  className="rounded-full"
+                />
+              )}
+              <span>{tooltip.commit.author.name}</span>
+              <span style={{ color: "#334155" }}>•</span>
+              <span>{new Date(tooltip.commit.date).toLocaleDateString("en-US")}</span>
             </div>
+            {owner && repo && (
+              <div className="mt-1.5 text-xs" style={{ color: "#334155" }}>
+                Click to view on GitHub ↗
+              </div>
+            )}
           </div>
         )}
       </div>

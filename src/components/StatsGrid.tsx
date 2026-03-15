@@ -1,13 +1,30 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GitCommit, Users, Calendar, TrendingUp } from "lucide-react";
 import type { RepoStats } from "@/lib/github";
 
-function useCountUp(target: number, duration = 1200): number {
+function useCountUp(
+  target: number,
+  duration = 1400
+): { count: number; ref: React.RefObject<HTMLDivElement | null> } {
   const [count, setCount] = useState(0);
+  const [triggered, setTriggered] = useState(false);
+  const ref = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
-    if (target === 0) return;
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry?.isIntersecting) setTriggered(true); },
+      { threshold: 0.3 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!triggered || target === 0) return;
     const start = Date.now();
     const tick = () => {
       const elapsed = Date.now() - start;
@@ -17,8 +34,9 @@ function useCountUp(target: number, duration = 1200): number {
       if (progress < 1) requestAnimationFrame(tick);
     };
     requestAnimationFrame(tick);
-  }, [target, duration]);
-  return count;
+  }, [triggered, target, duration]);
+
+  return { count, ref };
 }
 
 interface StatsGridProps {
@@ -45,12 +63,13 @@ interface StatCardConfig {
   sublabel: string;
   icon: React.ReactNode;
   accentColor: string;
+  cardRef?: React.RefObject<HTMLDivElement | null>;
 }
 
 export default function StatsGrid({ stats }: StatsGridProps) {
-  const animatedCommits = useCountUp(stats.total_commits);
-  const animatedContributors = useCountUp(stats.total_contributors);
-  const animatedDays = useCountUp(stats.project_age_days);
+  const { count: animatedCommits, ref: commitsRef } = useCountUp(stats.total_commits);
+  const { count: animatedContributors, ref: contribRef } = useCountUp(stats.total_contributors);
+  const { count: animatedDays, ref: daysRef } = useCountUp(stats.project_age_days);
 
   const cards: StatCardConfig[] = [
     {
@@ -59,6 +78,7 @@ export default function StatsGrid({ stats }: StatsGridProps) {
       sublabel: `~${stats.avg_commits_per_week < 1 ? "< 1" : stats.avg_commits_per_week} commits/week`,
       icon: <GitCommit className="w-4 h-4" />,
       accentColor: "#22d3ee",
+      cardRef: commitsRef,
     },
     {
       label: "Contributors",
@@ -66,6 +86,7 @@ export default function StatsGrid({ stats }: StatsGridProps) {
       sublabel: "developers",
       icon: <Users className="w-4 h-4" />,
       accentColor: "#a78bfa",
+      cardRef: contribRef,
     },
     {
       label: "Project Age",
@@ -73,6 +94,7 @@ export default function StatsGrid({ stats }: StatsGridProps) {
       sublabel: `${animatedDays.toLocaleString("en-US")} days`,
       icon: <Calendar className="w-4 h-4" />,
       accentColor: "#94a3b8",
+      cardRef: daysRef,
     },
     {
       label: "Most Active Day",
@@ -90,6 +112,7 @@ export default function StatsGrid({ stats }: StatsGridProps) {
         {cards.map((card) => (
           <div
             key={card.label}
+            ref={card.cardRef}
             className="rounded-2xl p-5"
             style={{
               background: "rgba(15,22,41,0.8)",
