@@ -106,6 +106,7 @@ export default function Contributors({ contributors }: ContributorsProps) {
                       alt={`${contributor.login}'s profile picture`}
                       width={48}
                       height={48}
+                      unoptimized
                       className="rounded-full"
                       style={{ background: "rgba(30,41,59,0.8)" }}
                     />

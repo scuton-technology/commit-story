@@ -12,7 +12,8 @@ import StoryLoading from "./loading";
 import BadgeSection from "@/components/BadgeSection";
 import ContributionHeatmap from "@/components/ContributionHeatmap";
 import Link from "next/link";
-import { ArrowLeft, Link2, Check, Share2, Linkedin } from "lucide-react";
+import { ArrowLeft, Link2, Check, Linkedin } from "lucide-react";
+import NavHeader from "@/components/NavHeader";
 
 export default function StoryPage() {
   const { owner, repo } = useParams<{ owner: string; repo: string }>();
@@ -97,16 +98,7 @@ export default function StoryPage() {
         className="min-h-screen flex flex-col"
         style={{ backgroundColor: "#0a0e1a" }}
       >
-        <div className="p-6">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-sm transition-colors"
-            style={{ color: "#64748b" }}
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Home
-          </Link>
-        </div>
+        <NavHeader />
         <div className="flex-1 flex items-center justify-center p-6">
           <div
             className="rounded-2xl p-8 max-w-md w-full text-center"
@@ -143,30 +135,17 @@ export default function StoryPage() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#0a0e1a" }}>
-      <nav
-        className="sticky top-0 z-50 border-b"
-        style={{
-          backgroundColor: "rgba(10,14,26,0.8)",
-          backdropFilter: "blur(12px)",
-          WebkitBackdropFilter: "blur(12px)",
-          borderColor: "rgba(148,163,184,0.1)",
-        }}
+      <NavHeader />
+
+      {/* Share bar */}
+      <div
+        className="border-b"
+        style={{ borderColor: "rgba(148,163,184,0.06)", background: "rgba(10,14,26,0.5)" }}
       >
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center gap-4">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-sm transition-colors"
-            style={{ color: "#64748b" }}
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Home
-          </Link>
-          <span style={{ color: "#334155" }}>/</span>
+        <div className="max-w-7xl mx-auto px-6 py-2.5 flex items-center gap-3">
           <span className="font-mono text-sm" style={{ color: "#cbd5e1" }}>
             {owner}/{repo}
           </span>
-
-          {/* Share actions */}
           <div className="ml-auto flex items-center gap-2">
             <button
               type="button"
@@ -179,14 +158,9 @@ export default function StoryPage() {
               }}
               aria-label="Copy link"
             >
-              {copied ? (
-                <Check className="w-3.5 h-3.5" />
-              ) : (
-                <Link2 className="w-3.5 h-3.5" />
-              )}
+              {copied ? <Check className="w-3.5 h-3.5" /> : <Link2 className="w-3.5 h-3.5" />}
               {copied ? "Copied!" : "Copy link"}
             </button>
-
             <button
               type="button"
               onClick={handleShareX}
@@ -198,8 +172,10 @@ export default function StoryPage() {
               }}
               aria-label="Share on X"
             >
-              <Share2 className="w-3.5 h-3.5" />
-              Share
+              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+              </svg>
+              X / Twitter
             </button>
             <button
               type="button"
@@ -233,7 +209,7 @@ export default function StoryPage() {
             </button>
           </div>
         </div>
-      </nav>
+      </div>
 
       <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
         <RepoHeader repo={story.repo} />
@@ -243,6 +219,21 @@ export default function StoryPage() {
         <CommitList commits={story.commits} totalCommits={story.stats.total_commits} />
         <Contributors contributors={story.contributors} />
         <BadgeSection owner={owner} repo={repo} />
+
+        {/* Year in Review link */}
+        <div className="text-center">
+          <Link
+            href={`/story/${owner}/${repo}/${new Date().getFullYear()}`}
+            className="inline-flex items-center gap-2 text-sm font-medium px-5 py-2.5 rounded-xl transition-all"
+            style={{
+              background: "rgba(15,22,41,0.8)",
+              border: "1px solid rgba(148,163,184,0.15)",
+              color: "#22d3ee",
+            }}
+          >
+            View {new Date().getFullYear()} in Review →
+          </Link>
+        </div>
       </div>
     </div>
   );

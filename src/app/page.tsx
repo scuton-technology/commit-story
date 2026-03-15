@@ -2,8 +2,9 @@
 
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { GitBranch, ArrowRight, Star, GitFork, Zap } from "lucide-react";
+import { ArrowRight, Star, GitFork, Zap } from "lucide-react";
 import RecentSearches, { addRecentSearch } from "@/components/RecentSearches";
+import NavHeader from "@/components/NavHeader";
 
 const EXAMPLE_REPOS = [
   {
@@ -85,21 +86,7 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen flex flex-col" style={{ backgroundColor: "#0a0e1a" }}>
-      {/* Nav */}
-      <nav
-        className="border-b px-6 py-4"
-        style={{ borderColor: "rgba(148,163,184,0.1)" }}
-      >
-        <div className="max-w-6xl mx-auto flex items-center gap-2">
-          <GitBranch className="w-5 h-5" style={{ color: "#22d3ee" }} />
-          <span
-            className="font-mono font-bold tracking-tight"
-            style={{ color: "#22d3ee" }}
-          >
-            commit-story
-          </span>
-        </div>
-      </nav>
+      <NavHeader />
 
       {/* Hero */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-24">
