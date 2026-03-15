@@ -4,7 +4,7 @@
 
 # Commit Story
 
-### See the story behind any GitHub repository.
+### See the story behind any GitHub repository
 
 Paste a repo URL. Get an interactive timeline, contributor map, and milestone journey — instantly.
 
